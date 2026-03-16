@@ -95,6 +95,15 @@ END_VAR
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="IsTxDone" Id="{48e53a82-6dc5-450b-b413-936a420ec00f}">
+      <Declaration><![CDATA[METHOD IsTxDone : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsTxDone := (_TxData.TxCounter = _RxData.TxCounter) AND (_TxData.NoOfMessages = 0);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SendCmd" Id="{114bb877-3e08-4fb7-a3e9-5688e34c6d83}">
       <Declaration><![CDATA[METHOD PRIVATE SendCmd
 VAR_INPUT
@@ -172,6 +181,9 @@ END_CASE]]></ST>
       <LineId Id="89" Count="1" />
       <LineId Id="92" Count="0" />
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveCanSimpleTransporter.IsTxDone">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="ODriveCanSimpleTransporter.SendCmd">
       <LineId Id="5" Count="0" />

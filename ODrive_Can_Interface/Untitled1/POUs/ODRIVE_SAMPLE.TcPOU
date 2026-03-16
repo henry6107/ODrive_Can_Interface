@@ -5,22 +5,46 @@
 VAR
 	_fbODriveAxis : ODriveAxisController;
 	bExecute : BOOL;
+	
+	bSetAxisStateExecute : BOOL;
+	bSetAxisStateBusy : BOOL;
+	bSetAxisStateError : BOOL;
+	sSetAxisStateErrorMsg : STRING;
+	bSetAxisStateDone : BOOL;
+	eRequestedAxisState : E_OdriveAxisState := E_OdriveAxisState.ClosedLoopControl;
+	
 	stOdriveHeartBeat : ST_OdriveHeartbeat;
 	stOdriveEncoderEstimates : ST_OdriveEncoderEstimates;
 	stOdriveError : ST_OdriveError;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_fbODriveAxis.GetHeartBeat( bExecute:= bExecute, stOdriveHeartBeat=> stOdriveHeartBeat );
+      <ST><![CDATA[_fbODriveAxis.SetAxisState(
+	bExecute:= bSetAxisStateExecute,
+	eRequestedState:= eRequestedAxisState,
+	bBusy=> bSetAxisStateBusy,
+	bError=> bSetAxisStateError,
+	sErrorMsg=> sSetAxisStateErrorMsg,
+	bDone=> bSetAxisStateDone
+);
+_fbODriveAxis.GetHeartBeat( bExecute:= bExecute, stOdriveHeartBeat=> stOdriveHeartBeat );
 _fbODriveAxis.GetEncoderEstimates( bExecute:= bExecute, stOdriveEncoderEstimates=> stOdriveEncoderEstimates );
 _fbODriveAxis.GetError( bExecute:= bExecute, stOdriveError=> stOdriveError );
 _fbODriveAxis(NodeId:= 7);]]></ST>
     </Implementation>
     <LineIds Name="ODRIVE_SAMPLE">
-      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="11" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="7" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="2" Count="0" />
+      <LineId Id="24" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

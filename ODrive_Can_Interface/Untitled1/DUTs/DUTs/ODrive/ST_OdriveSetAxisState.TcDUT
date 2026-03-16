@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveSetAxisState" Id="{4d5d6032-2f8a-44c9-b999-3f3dc3b037cb}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveSetAxisState :
+STRUCT
+    eRequestedState : E_OdriveAxisState;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

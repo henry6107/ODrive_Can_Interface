@@ -51,6 +51,9 @@
     <Compile Include="DUTs\DUTs\ODrive\ST_OdriveHeartbeat.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveSetAxisState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveEncoderEstimatesBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -58,6 +61,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveHeartbeatBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveSetAxisStateBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GVLs\GVL_ODrive.TcGVL">
