@@ -5,7 +5,7 @@
 STRUCT
 	TxCounter : UINT;
 	RxCounter : UINT;
-	NoOfRxMessages : UINT;
+	NoOfMessages : UINT;
 	Messages : ARRAY[0..9] OF ST_CanMessage;	// Message length should according to io device setting
 END_STRUCT
 END_TYPE

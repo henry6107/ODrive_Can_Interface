@@ -7,15 +7,79 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	TxData AT%Q* : ST_CanQueue;
-	RxData AT%I* : ST_CanQueue;
+	_TxData AT%Q* : ST_CanQueue;
+	_RxData AT%I* : ST_CanQueue;
+END_VAR
+
+VAR_STAT CONSTANT
+	_nMaxMsgCount : UINT := 10;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="AddCmd" Id="{f539eac5-9aa6-44dc-ac60-e1b1afb830bb}">
+      <Declaration><![CDATA[METHOD AddCmd
+VAR_INPUT
+	stCanMsg : ST_CanMessage;
+END_VAR
+
+VAR_OUTPUT
+	//bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Check if queue is fulled
+IF _TxData.NoOfMessages >= _nMaxMsgCount THEN
+	bError := TRUE;
+	sErrorMsg := 'Tx message queue is fulled !';
+	RETURN;
+END_IF
+
+// Count number of sent message
+_TxData.NoOfMessages := _TxData.NoOfMessages + 1;
+
+// Add message to queue (0-based)
+_TxData.Messages[_TxData.NoOfMessages - 1] := stCanMsg;
+
+bDone := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SendCmd" Id="{114bb877-3e08-4fb7-a3e9-5688e34c6d83}">
+      <Declaration><![CDATA[METHOD SendCmd : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_INST
+    nStep : UINT := 0;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="CanInterface_Transporter">
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="CanInterface_Transporter.AddCmd">
+      <LineId Id="5" Count="0" />
+      <LineId Id="20" Count="1" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="0" />
+    </LineIds>
+    <LineIds Name="CanInterface_Transporter.SendCmd">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
