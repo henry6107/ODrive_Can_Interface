@@ -6,14 +6,17 @@ VAR
 	_fbODriveAxis : ODriveAxisController;
 	bExecute : BOOL;
 	stOdriveHeartBeat : ST_OdriveHeartbeat;
+	stOdriveEncoderEstimates : ST_OdriveEncoderEstimates;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[_fbODriveAxis.GetHeartBeat( bExecute:= bExecute, stOdriveHeartBeat=> stOdriveHeartBeat );
+_fbODriveAxis.GetEncoderEstimates( bExecute:= bExecute, stOdriveEncoderEstimates=> stOdriveEncoderEstimates );
 _fbODriveAxis(NodeId:= 7);]]></ST>
     </Implementation>
     <LineIds Name="ODRIVE_SAMPLE">
       <LineId Id="7" Count="0" />
+      <LineId Id="14" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

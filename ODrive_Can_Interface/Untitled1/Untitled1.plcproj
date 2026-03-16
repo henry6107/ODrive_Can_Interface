@@ -42,7 +42,13 @@
     <Compile Include="DUTs\DUTs\ODrive\E_OdriveProcedureResult.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveEncoderEstimates.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\DUTs\ODrive\ST_OdriveHeartbeat.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveEncoderEstimatesBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveHeartbeatBytes.TcDUT">

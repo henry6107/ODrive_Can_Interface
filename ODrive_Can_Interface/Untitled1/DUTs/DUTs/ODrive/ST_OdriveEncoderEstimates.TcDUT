@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveEncoderEstimates" Id="{4b169bf9-a980-4bd9-8d57-30ac7f02f401}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveEncoderEstimates :
+STRUCT
+    rPosEstimate : REAL;
+    rVelEstimate : REAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

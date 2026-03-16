@@ -17,6 +17,89 @@ END_VAR
     <Implementation>
       <ST><![CDATA[_fbODriveCanSimpleTransporter();]]></ST>
     </Implementation>
+    <Method Name="GetEncoderEstimates" Id="{14a2520e-b7da-434d-8e95-8a742dcda8c6}">
+      <Declaration><![CDATA[METHOD GetEncoderEstimates
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+	stOdriveEncoderEstimates : ST_OdriveEncoderEstimates;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 1;
+	
+	bAddCmdDone : BOOL;
+	bDataExist : BOOL;
+	
+	nIdx : UINT;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+	uEncoderEstimates : U_OdriveEncoderEstimatesBytes;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;			
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.GetEncoderEstimates), 5) OR SHL(nRTR, 4);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Receive command
+		_fbODriveCanSimpleTransporter.ReceiveData(NodeId, E_OdriveCmd.GetEncoderEstimates, bExist=> bDataExist, stResultCanMsg=> stCanMsg);
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		
+		IF tmrTimeOut.Q THEN	// Time out
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+			
+		ELSIF NOT bDataExist THEN	// Not receive data yet
+			bBusy := TRUE;
+			
+		ELSE	// Receive data
+			bDone := TRUE;
+			FOR nIdx := 0 TO 7 DO
+				uEncoderEstimates.aBytes[nIdx] := stCanMsg.Data[nIdx];
+			END_FOR
+			stOdriveEncoderEstimates := uEncoderEstimates.stEncoderEstimates;
+			nStep := 3;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			stOdriveEncoderEstimates := uEncoderEstimates.stEncoderEstimates;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetHeartBeat" Id="{cb9c0ea2-4e21-4d23-b1eb-ad5840aff9a5}">
       <Declaration><![CDATA[METHOD GetHeartBeat
 VAR_INPUT
@@ -102,6 +185,28 @@ END_CASE]]></ST>
     </Method>
     <LineIds Name="ODriveAxisController">
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.GetEncoderEstimates">
+      <LineId Id="83" Count="19" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="112" Count="2" />
+      <LineId Id="103" Count="1" />
+      <LineId Id="115" Count="2" />
+      <LineId Id="127" Count="1" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="129" Count="1" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="155" Count="1" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="152" Count="2" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetHeartBeat">
       <LineId Id="83" Count="19" />
