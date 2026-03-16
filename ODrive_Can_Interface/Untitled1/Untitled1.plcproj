@@ -27,6 +27,9 @@
     <Compile Include="DUTs\DUTs\ODrive\E_OdriveAxisState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveAxisErrorBit.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\DUTs\ODrive\E_OdriveCmd.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -36,16 +39,13 @@
     <Compile Include="DUTs\DUTs\ODrive\E_OdriveInputMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\DUTs\ODrive\U_OdriveDwordBytes.TcDUT">
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveProcedureResult.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\DUTs\ODrive\U_OdriveIntBytes.TcDUT">
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveHeartbeat.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\DUTs\ODrive\U_OdriveRealBytes.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DUTs\DUTs\ODrive\U_OdriveUintBytes.TcDUT">
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveHeartbeatBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GVLs\GVL_ODrive.TcGVL">
@@ -55,10 +55,13 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\ODrive\ODriveAxisController.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\ODRIVE_SAMPLE.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\ODrive\CanInterface_Transporter.TcPOU">
+    <Compile Include="POUs\ODrive\ODriveCanSimpleTransporter.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -80,6 +83,32 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_UPPER_BOUND</Key>
+          <Value>15</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_EXP</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_ADDRESS</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_COMMENT</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_OUTSTRING</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_SHOW_VALID_ITEMS</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>

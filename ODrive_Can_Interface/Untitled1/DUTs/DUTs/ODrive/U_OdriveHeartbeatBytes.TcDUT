@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="U_OdriveHeartbeatBytes" Id="{1bfe873f-f95d-4121-bb4c-fe11ce8dfe29}">
+    <Declaration><![CDATA[TYPE U_OdriveHeartbeatBytes :
+UNION
+    stHeartbeat : ST_OdriveHeartbeat;
+    aBytes : ARRAY[0..6] OF BYTE;
+END_UNION
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

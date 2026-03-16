@@ -4,10 +4,13 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
 	nMaxMsgCount : UINT := 10;
+	
 	nCmd_Mask : UINT := 2#11_1110_0000;
 	nCmd_Shift : UINT := 5;
 	nNodeId_Mask : UINT := 2#1111_1100_0000_0000;
 	nNodeId_Shift : UINT := 10;
+	
+	nReceiveData_TimeOut : TIME := T#1S;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

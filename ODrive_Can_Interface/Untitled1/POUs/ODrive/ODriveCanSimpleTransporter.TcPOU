@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
-  <POU Name="CanInterface_Transporter" Id="{c60a47cd-3a50-4e37-b37f-89c661c67906}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK CanInterface_Transporter
+  <POU Name="ODriveCanSimpleTransporter" Id="{c60a47cd-3a50-4e37-b37f-89c661c67906}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ODriveCanSimpleTransporter
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -9,6 +9,7 @@ END_VAR
 VAR
 	_TxData AT%Q* : ST_CanQueue;
 	_RxData AT%I* : ST_CanQueue;
+	_bTxQueueNotEmpty : BOOL;
 END_VAR
 
 VAR_STAT CONSTANT
@@ -19,7 +20,11 @@ END_VAR
       <ST><![CDATA[// Receive data cyclically
 IF _TxData.RxCounter <> _RxData.RxCounter THEN
 	_TxData.RxCounter := _RxData.RxCounter;
-END_IF]]></ST>
+END_IF
+
+// Send data if queue is not empty
+_bTxQueueNotEmpty := _TxData.NoOfMessages <> 0;
+SendCmd(bExecute:= _bTxQueueNotEmpty );]]></ST>
     </Implementation>
     <Method Name="AddCmd" Id="{f539eac5-9aa6-44dc-ac60-e1b1afb830bb}">
       <Declaration><![CDATA[METHOD AddCmd
@@ -58,6 +63,11 @@ VAR_INPUT
 	eODriveCmd : E_ODriveCmd;
 END_VAR
 
+VAR_OUTPUT
+	bExist : BOOL;
+	stResultCanMsg : ST_CanMessage;
+END_VAR
+
 VAR
 	nIdx : UINT;
 	stCurCanMsg : ST_CanMessage;
@@ -67,25 +77,26 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[FOR nIdx := 0 TO (GVL_ODrive.nMaxMsgCount-1) DO
+	
+	// Parse data
 	stCurCanMsg := _RxData.Messages[nIdx];
 	nCurNodeId := SHR( (stCurCanMsg.CobId AND GVL_ODrive.nNodeId_Mask), GVL_ODrive.nNodeId_Shift );
 	nCurCmd := SHR( (stCurCanMsg.CobId AND GVL_ODrive.nCmd_Mask), GVL_ODrive.nCmd_Shift );
 	
+	// Check if match input
 	IF nNodeId <> nCurNodeId OR TO_UINT(eODriveCmd) <> nCurCmd THEN
 		CONTINUE;
 	END_IF
 	
-	CASE eODriveCmd OF
-		E_ODriveCmd.Heartbeat:
-		E_ODriveCmd.GetError:
-		E_ODriveCmd.GetEncoderEstimates:
-	END_CASE
+	bExist := TRUE;
+	stResultCanMsg := stCurCanMsg;
+	RETURN;
 	
 END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="SendCmd" Id="{114bb877-3e08-4fb7-a3e9-5688e34c6d83}">
-      <Declaration><![CDATA[METHOD SendCmd
+      <Declaration><![CDATA[METHOD PRIVATE SendCmd
 VAR_INPUT
 	bExecute : BOOL;
 END_VAR
@@ -97,13 +108,11 @@ END_VAR
 
 VAR_INST
     nStep : UINT := 0;
-	rTrig : R_TRIG;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE nStep OF
 	0: // Idle
-		rTrig(CLK:= bExecute);
-		IF rTrig.Q THEN
+		IF bExecute THEN
 			bBusy := TRUE;
 			nStep := 1;
 		END_IF
@@ -115,24 +124,26 @@ END_VAR]]></Declaration>
 	
 	2: // Check command sent
 		IF _TxData.TxCounter = _RxData.TxCounter THEN
+			_TxData.NoOfMessages := 0;	// Clear buffer count
 			bDone := TRUE;
+			nStep := 0;
 		ELSE
 			bBusy := TRUE;
 		END_IF
 		
-		IF NOT bExecute THEN
-			nStep := 0;
-		END_IF
-
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="CanInterface_Transporter">
+    <LineIds Name="ODriveCanSimpleTransporter">
       <LineId Id="20" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="18" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="71" Count="0" />
     </LineIds>
-    <LineIds Name="CanInterface_Transporter.AddCmd">
+    <LineIds Name="ODriveCanSimpleTransporter.AddCmd">
       <LineId Id="5" Count="0" />
       <LineId Id="20" Count="1" />
       <LineId Id="23" Count="1" />
@@ -147,20 +158,24 @@ END_CASE]]></ST>
       <LineId Id="30" Count="0" />
       <LineId Id="32" Count="0" />
     </LineIds>
-    <LineIds Name="CanInterface_Transporter.ReceiveData">
+    <LineIds Name="ODriveCanSimpleTransporter.ReceiveData">
       <LineId Id="5" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="78" Count="0" />
       <LineId Id="17" Count="0" />
-      <LineId Id="21" Count="7" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="48" Count="0" />
-      <LineId Id="29" Count="1" />
-      <LineId Id="15" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="23" Count="2" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="89" Count="1" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="CanInterface_Transporter.SendCmd">
+    <LineIds Name="ODriveCanSimpleTransporter.SendCmd">
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="20" Count="2" />
@@ -170,13 +185,12 @@ END_CASE]]></ST>
       <LineId Id="41" Count="0" />
       <LineId Id="15" Count="1" />
       <LineId Id="30" Count="0" />
+      <LineId Id="55" Count="0" />
       <LineId Id="32" Count="0" />
+      <LineId Id="60" Count="0" />
       <LineId Id="35" Count="1" />
       <LineId Id="33" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="38" Count="1" />
-      <LineId Id="14" Count="0" />
+      <LineId Id="68" Count="0" />
       <LineId Id="11" Count="0" />
     </LineIds>
   </POU>

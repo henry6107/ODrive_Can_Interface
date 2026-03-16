@@ -3,10 +3,23 @@
   <DUT Name="E_OdriveAxisState" Id="{E5AA15B2-4825-4A29-B9E4-75C117932D7D}">
     <Declaration><![CDATA[TYPE E_OdriveAxisState :
 (
-    Unknown := 0,
+    Undefined := 0,
     Idle := 1,
-    ClosedLoopControl := 8
-) UDINT;
+    StartupSequence := 2,
+    FullCalibrationSequence := 3,
+    MotorCalibration := 4,
+    EncoderIndexSearch := 6,
+    EncoderOffsetCalibration := 7,
+    ClosedLoopControl := 8,
+    LockinSpin := 9,
+    EncoderDirFind := 10,
+    Homing := 11,
+    EncoderHallPolarityCalibration := 12,
+    EncoderHallPhaseCalibration := 13,
+    AnticoggingCalibration := 14,
+    HarmonicCalibration := 15,
+    HarmonicCalibrationCommutation := 16
+) USINT;
 END_TYPE
 ]]></Declaration>
   </DUT>

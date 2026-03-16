@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveHeartbeat" Id="{d15e7b3a-65f3-40f2-b70f-9c4d3f4715aa}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveHeartbeat :
+STRUCT
+    dwAxisError : DWORD;
+    eAxisState : E_OdriveAxisState;
+    eProcedureResult : E_OdriveProcedureResult;
+    byTrajectoryDone : BYTE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

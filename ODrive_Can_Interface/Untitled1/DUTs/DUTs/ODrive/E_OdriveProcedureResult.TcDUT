@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_OdriveProcedureResult" Id="{6f120f70-0b35-4782-b3e8-1193c8185fe3}">
+    <Declaration><![CDATA[TYPE E_OdriveProcedureResult :
+(
+    Success := 0,
+    Busy := 1,
+    Cancelled := 2,
+    Disarmed := 3,
+    NoResponse := 4,
+    PolePairCprMismatch := 5,
+    PhaseResistanceOutOfRange := 6,
+    PhaseInductanceOutOfRange := 7,
+    UnbalancedPhases := 8,
+    InvalidMotorType := 9,
+    IllegalHallState := 10,
+    Timeout := 11,
+    HomingWithoutEndstop := 12,
+    InvalidState := 13,
+    NotCalibrated := 14,
+    NotConverging := 15
+) USINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

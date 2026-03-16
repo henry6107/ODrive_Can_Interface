@@ -3,13 +3,17 @@
   <POU Name="ODRIVE_SAMPLE" Id="{38a10a06-a8a5-4a8f-92f3-d56125e5d3b4}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM ODRIVE_SAMPLE
 VAR
-	_fbCanInterface_Transporter : CanInterface_Transporter;
+	_fbODriveAxis : ODriveAxisController;
+	bExecute : BOOL;
+	stOdriveHeartBeat : ST_OdriveHeartbeat;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_fbCanInterface_Transporter();]]></ST>
+      <ST><![CDATA[_fbODriveAxis.GetHeartBeat( bExecute:= bExecute, stOdriveHeartBeat=> stOdriveHeartBeat );
+_fbODriveAxis(NodeId:= 7);]]></ST>
     </Implementation>
     <LineIds Name="ODRIVE_SAMPLE">
+      <LineId Id="7" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_OdriveAxisErrorBit" Id="{f2d57e04-1f58-4f1b-9d13-46995ea7190a}">
+    <Declaration><![CDATA[TYPE E_OdriveAxisErrorBit :
+(
+    Initializing := 16#00000001,
+    SystemLevel := 16#00000002,
+    TimingError := 16#00000004,
+    MissingEstimate := 16#00000008,
+    BadConfig := 16#00000010,
+    DrvFault := 16#00000020,
+    MissingInput := 16#00000040,
+    DcBusOverVoltage := 16#00000100,
+    DcBusUnderVoltage := 16#00000200,
+    DcBusOverCurrent := 16#00000400,
+    DcBusOverRegenCurrent := 16#00000800,
+    CurrentLimitViolation := 16#00001000,
+    MotorOverTemp := 16#00002000,
+    InverterOverTemp := 16#00004000,
+    VelocityLimitViolation := 16#00008000,
+    PositionLimitViolation := 16#00010000,
+    WatchdogTimerExpired := 16#01000000,
+    EstopRequested := 16#02000000,
+    SpinoutDetected := 16#04000000,
+    BrakeResistorDisarmed := 16#08000000,
+    ThermistorDisconnected := 16#10000000,
+    CalibrationError := 16#40000000
+) DWORD;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
