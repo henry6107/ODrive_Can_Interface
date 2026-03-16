@@ -45,10 +45,16 @@
     <Compile Include="DUTs\DUTs\ODrive\ST_OdriveEncoderEstimates.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveError.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\DUTs\ODrive\ST_OdriveHeartbeat.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveEncoderEstimatesBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveErrorBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveHeartbeatBytes.TcDUT">

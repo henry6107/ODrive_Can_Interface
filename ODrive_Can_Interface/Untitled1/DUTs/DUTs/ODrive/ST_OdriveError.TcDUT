@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveError" Id="{e5d04a90-c4cc-4b8e-b0ea-c8f4867d1528}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveError :
+STRUCT
+    dwActiveErrors : DWORD;
+    dwDisarmReason : DWORD;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
