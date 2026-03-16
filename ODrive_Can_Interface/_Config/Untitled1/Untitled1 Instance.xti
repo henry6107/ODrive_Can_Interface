@@ -122,6 +122,474 @@
 			</SubItem>
 		</DataType>
 		<DataType>
+			<Name GUID="{2BB108BF-0CF1-A25B-8739-172E972A09CF}" AutoDeleteType="true">E_OdriveCmd</Name>
+			<BitSize>32</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[Heartbeat]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Estop]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[GetError]]></Text>
+				<Enum>3</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[SetAxisState]]></Text>
+				<Enum>7</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[GetEncoderEstimates]]></Text>
+				<Enum>9</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[SetControllerMode]]></Text>
+				<Enum>11</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[SetInputPos]]></Text>
+				<Enum>12</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[SetInputVel]]></Text>
+				<Enum>13</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ClearErrors]]></Text>
+				<Enum>24</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Set_AbsPos]]></Text>
+				<Enum>25</Enum>
+			</EnumInfo>
+			<Properties>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{82033037-06F9-B672-223D-BB61AD00A2F7}" AutoDeleteType="true">ODriveCanSimpleTransporter</Name>
+			<BitSize>1792</BitSize>
+			<SubItem>
+				<Name>_TxData</Name>
+				<Type GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</Type>
+				<BitSize>848</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcAddressType</Name>
+						<Value>Output</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>_RxData</Name>
+				<Type GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</Type>
+				<BitSize>848</BitSize>
+				<BitOffs>912</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcAddressType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>_bTxQueueNotEmpty</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>1760</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVECANSIMPLETRANSPORTER__SENDCMD__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>1776</BitOffs>
+				<Default>
+					<Value>0</Value>
+				</Default>
+			</SubItem>
+			<SubItem>
+				<Name Static="true">_nMaxMsgCount</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<Default>
+					<Value>10</Value>
+				</Default>
+			</SubItem>
+			<Method>
+				<Name>SendCmd</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Comment><![CDATA[bError : BOOL;]]></Comment>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVECANSIMPLETRANSPORTER__SENDCMD__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>IsTxDone</Name>
+				<ReturnType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</ReturnType>
+				<ReturnBitSize>8</ReturnBitSize>
+			</Method>
+			<Method>
+				<Name>AddCmd</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Comment><![CDATA[bBusy : BOOL;]]></Comment>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+			</Method>
+			<Method>
+				<Name>ReceiveData</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>nNodeId</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>eODriveCmd</Name>
+					<Type GUID="{2BB108BF-0CF1-A25B-8739-172E972A09CF}">E_OdriveCmd</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bExist</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>stResultCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>stCurCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nCurNodeId</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nCurCmd</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+			</Method>
+			<Properties>
+				<Property>
+					<Name>PouType</Name>
+					<Value>FunctionBlock</Value>
+				</Property>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard" AutoDeleteType="true">R_TRIG</Name>
+			<Comment><![CDATA[
+	Rising Edge detection.
+]]></Comment>
+			<BitSize>128</BitSize>
+			<SubItem>
+				<Name>CLK</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ Signal to detect ]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>Q</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ rising edge at signal detected ]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>72</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Output</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>M</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>80</BitOffs>
+				<Properties>
+					<Property>
+						<Name>conditionalshow</Name>
+					</Property>
+				</Properties>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>PouType</Name>
+					<Value>FunctionBlock</Value>
+				</Property>
+				<Property>
+					<Name>conditionalshow_all_locals</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard" AutoDeleteType="true">TON</Name>
+			<BitSize>256</BitSize>
+			<SubItem>
+				<Name>IN</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ starts timer with rising edge, resets timer with falling edge ]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>PT</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
+				<Comment><![CDATA[ time to pass, before Q is set ]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>96</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>Q</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ gets TRUE, delay time (PT) after a rising edge at IN ]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>128</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Output</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>ET</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
+				<Comment><![CDATA[ elapsed time ]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>160</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Output</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>M</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>192</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>StartTime</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>224</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>PouType</Name>
+					<Value>FunctionBlock</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}" AutoDeleteType="true">ST_OdriveEncoderEstimates</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>rPosEstimate</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>rVelEstimate</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>pack_mode</Name>
+					<Value>1</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{B576A158-DF97-08A8-1774-4CCD82058AE3}" AutoDeleteType="true">U_OdriveEncoderEstimatesBytes</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>stEncoderEstimates</Name>
+				<Type GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}">ST_OdriveEncoderEstimates</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>8</Elements>
+				</ArrayInfo>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{D434495D-E83F-5744-8F58-829027E72278}" AutoDeleteType="true">ST_OdriveError</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>dwActiveErrors</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>dwDisarmReason</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>pack_mode</Name>
+					<Value>1</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{EB80EC8B-291D-89B4-2325-6083B7F7D5AB}" AutoDeleteType="true">U_OdriveErrorBytes</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>stOdriveError</Name>
+				<Type GUID="{D434495D-E83F-5744-8F58-829027E72278}">ST_OdriveError</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>8</Elements>
+				</ArrayInfo>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
 			<Name GUID="{7D038EA7-368C-87AA-D192-149C078FF033}" AutoDeleteType="true">E_OdriveAxisState</Name>
 			<BitSize>8</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
@@ -304,16 +772,270 @@
 			</Properties>
 		</DataType>
 		<DataType>
-			<Name GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}" AutoDeleteType="true">ST_OdriveEncoderEstimates</Name>
+			<Name GUID="{557C5254-A528-C8A3-580A-EC82C8B55F6C}" AutoDeleteType="true">U_OdriveHeartbeatBytes</Name>
+			<BitSize>56</BitSize>
+			<SubItem>
+				<Name>stHeartbeat</Name>
+				<Type GUID="{57704CAA-38D6-C912-CB9D-08A8F5C32ED7}">ST_OdriveHeartbeat</Type>
+				<BitSize>56</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>7</Elements>
+				</ArrayInfo>
+				<BitSize>56</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{B564CCB5-00D8-2248-D30A-29677816DA1B}" AutoDeleteType="true">ST_OdriveSetAbsolutePosition</Name>
+			<BitSize>32</BitSize>
+			<SubItem>
+				<Name>rPosition</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>pack_mode</Name>
+					<Value>1</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{2C01C01D-9D21-EA45-A5E4-9CEB5A61D316}" AutoDeleteType="true">U_OdriveSetAbsolutePositionBytes</Name>
+			<BitSize>32</BitSize>
+			<SubItem>
+				<Name>stSetAbsolutePosition</Name>
+				<Type GUID="{B564CCB5-00D8-2248-D30A-29677816DA1B}">ST_OdriveSetAbsolutePosition</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>4</Elements>
+				</ArrayInfo>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{4CF99737-3F91-F38F-863B-39E57F44881F}" AutoDeleteType="true">ST_OdriveSetAxisState</Name>
+			<BitSize>8</BitSize>
+			<SubItem>
+				<Name>eRequestedState</Name>
+				<Type GUID="{7D038EA7-368C-87AA-D192-149C078FF033}">E_OdriveAxisState</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>pack_mode</Name>
+					<Value>1</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{6BD3CC05-7549-192C-C115-B615DAB2CC2F}" AutoDeleteType="true">U_OdriveSetAxisStateBytes</Name>
+			<BitSize>32</BitSize>
+			<SubItem>
+				<Name>stSetAxisState</Name>
+				<Type GUID="{4CF99737-3F91-F38F-863B-39E57F44881F}">ST_OdriveSetAxisState</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>4</Elements>
+				</ArrayInfo>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{76B07073-67C8-196F-6E92-A87BFB54CB6F}" AutoDeleteType="true">E_OdriveControlMode</Name>
+			<BitSize>32</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[Voltage]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Torque]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Velocity]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Position]]></Text>
+				<Enum>3</Enum>
+			</EnumInfo>
+			<Properties>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{9F3AD39B-1060-9713-F97F-E9D00DD01EA2}" AutoDeleteType="true">E_OdriveInputMode</Name>
+			<BitSize>32</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[Inactive]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Passthrough]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[VelRamp]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[PosFilter]]></Text>
+				<Enum>3</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[MixChannels]]></Text>
+				<Enum>4</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[TrapTraj]]></Text>
+				<Enum>5</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[TorqueRamp]]></Text>
+				<Enum>6</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Mirror]]></Text>
+				<Enum>7</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Tuning]]></Text>
+				<Enum>8</Enum>
+			</EnumInfo>
+			<Properties>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{568D49B2-4D17-D855-FC6B-077634277085}" AutoDeleteType="true">ST_OdriveSetControllerMode</Name>
 			<BitSize>64</BitSize>
 			<SubItem>
-				<Name>rPosEstimate</Name>
+				<Name>eControlMode</Name>
+				<Type GUID="{76B07073-67C8-196F-6E92-A87BFB54CB6F}">E_OdriveControlMode</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>eInputMode</Name>
+				<Type GUID="{9F3AD39B-1060-9713-F97F-E9D00DD01EA2}">E_OdriveInputMode</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>pack_mode</Name>
+					<Value>1</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{B16E7C64-00C5-92D6-A4D5-9DDAE21CA2C8}" AutoDeleteType="true">U_OdriveSetControllerModeBytes</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>stSetControllerMode</Name>
+				<Type GUID="{568D49B2-4D17-D855-FC6B-077634277085}">ST_OdriveSetControllerMode</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>8</Elements>
+				</ArrayInfo>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{706C5246-BBDD-2598-0C93-E1D9D49BE9A7}" AutoDeleteType="true">ST_OdriveSetInputPos</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>rInputPos</Name>
 				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
 				<BitSize>32</BitSize>
 				<BitOffs>0</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>rVelEstimate</Name>
+				<Name>nVelFF</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>nTorqueFF</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>pack_mode</Name>
+					<Value>1</Value>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{F64D4E2A-C1A3-DEB0-51DD-EB37E9DA574C}" AutoDeleteType="true">U_OdriveSetInputPosBytes</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>stSetInputPos</Name>
+				<Type GUID="{706C5246-BBDD-2598-0C93-E1D9D49BE9A7}">ST_OdriveSetInputPos</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>8</Elements>
+				</ArrayInfo>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{4AFE165E-A5E6-7FA2-2061-2FF54306EAB0}" AutoDeleteType="true">ST_OdriveSetInputVel</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>rInputVel</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>rInputTorqueFF</Name>
 				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
 				<BitSize>32</BitSize>
 				<BitOffs>32</BitOffs>
@@ -326,24 +1048,1559 @@
 			</Properties>
 		</DataType>
 		<DataType>
-			<Name GUID="{D434495D-E83F-5744-8F58-829027E72278}" AutoDeleteType="true">ST_OdriveError</Name>
+			<Name GUID="{EC8D408E-E367-408A-E0D8-7812898F9BC7}" AutoDeleteType="true">U_OdriveSetInputVelBytes</Name>
 			<BitSize>64</BitSize>
 			<SubItem>
-				<Name>dwActiveErrors</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
-				<BitSize>32</BitSize>
+				<Name>stSetInputVel</Name>
+				<Type GUID="{4AFE165E-A5E6-7FA2-2061-2FF54306EAB0}">ST_OdriveSetInputVel</Type>
+				<BitSize>64</BitSize>
 				<BitOffs>0</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>dwDisarmReason</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000007}">DWORD</Type>
-				<BitSize>32</BitSize>
-				<BitOffs>32</BitOffs>
+				<Name>aBytes</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>8</Elements>
+				</ArrayInfo>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
 			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{CFF89D4B-9174-C551-8CC4-A913BF4DE196}" AutoDeleteType="true">ODriveAxisController</Name>
+			<BitSize>6784</BitSize>
+			<SubItem>
+				<Name>NodeId</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>_fbODriveCanSimpleTransporter</Name>
+				<Type GUID="{82033037-06F9-B672-223D-BB61AD00A2F7}">ODriveCanSimpleTransporter</Type>
+				<BitSize>1792</BitSize>
+				<BitOffs>128</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__CLEARERRORS__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>1920</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__CLEARERRORS__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>1984</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__CLEARERRORS__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>2112</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__ESTOP__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>2368</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__ESTOP__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>2432</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__ESTOP__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>2560</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>2816</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>2880</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>3008</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__UENCODERESTIMATES</Name>
+				<Type GUID="{B576A158-DF97-08A8-1774-4CCD82058AE3}">U_OdriveEncoderEstimatesBytes</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>3264</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETERROR__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>3328</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETERROR__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>3392</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETERROR__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>3520</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETERROR__UODRIVEERROR</Name>
+				<Type GUID="{EB80EC8B-291D-89B4-2325-6083B7F7D5AB}">U_OdriveErrorBytes</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>3776</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>3840</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>3904</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>4032</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__UODRIVEHEARTBEAT</Name>
+				<Type GUID="{557C5254-A528-C8A3-580A-EC82C8B55F6C}">U_OdriveHeartbeatBytes</Type>
+				<BitSize>56</BitSize>
+				<BitOffs>4288</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>4352</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>4416</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>4544</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__USETABSOLUTEPOSITION</Name>
+				<Type GUID="{2C01C01D-9D21-EA45-A5E4-9CEB5A61D316}">U_OdriveSetAbsolutePositionBytes</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>4800</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>4832</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>4864</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>4992</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__USETAXISSTATE</Name>
+				<Type GUID="{6BD3CC05-7549-192C-C115-B615DAB2CC2F}">U_OdriveSetAxisStateBytes</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>5248</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>5280</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>5312</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>5440</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__USETCONTROLLERMODE</Name>
+				<Type GUID="{B16E7C64-00C5-92D6-A4D5-9DDAE21CA2C8}">U_OdriveSetControllerModeBytes</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>5696</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTPOS__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>5760</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTPOS__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>5824</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTPOS__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>5952</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTPOS__USETINPUTPOS</Name>
+				<Type GUID="{F64D4E2A-C1A3-DEB0-51DD-EB37E9DA574C}">U_OdriveSetInputPosBytes</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>6208</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTVEL__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>6272</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTVEL__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>6336</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTVEL__TMRTIMEOUT</Name>
+				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+				<BitSize>256</BitSize>
+				<BitOffs>6464</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>__ODRIVEAXISCONTROLLER__SETINPUTVEL__USETINPUTVEL</Name>
+				<Type GUID="{EC8D408E-E367-408A-E0D8-7812898F9BC7}">U_OdriveSetInputVelBytes</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>6720</BitOffs>
+			</SubItem>
+			<Method>
+				<Name>SetControllerMode</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>eControlMode</Name>
+					<Type GUID="{76B07073-67C8-196F-6E92-A87BFB54CB6F}">E_OdriveControlMode</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>eInputMode</Name>
+					<Type GUID="{9F3AD39B-1060-9713-F97F-E9D00DD01EA2}">E_OdriveInputMode</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uSetControllerMode</Name>
+					<Type GUID="{B16E7C64-00C5-92D6-A4D5-9DDAE21CA2C8}">U_OdriveSetControllerModeBytes</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETCONTROLLERMODE__USETCONTROLLERMODE</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>GetHeartBeat</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>stOdriveHeartBeat</Name>
+					<Type GUID="{57704CAA-38D6-C912-CB9D-08A8F5C32ED7}">ST_OdriveHeartbeat</Type>
+					<BitSize>56</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>bDataExist</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uOdriveHeartBeat</Name>
+					<Type GUID="{557C5254-A528-C8A3-580A-EC82C8B55F6C}">U_OdriveHeartbeatBytes</Type>
+					<BitSize>56</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__UODRIVEHEARTBEAT</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>SetAbsolutePosition</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>rPosition</Name>
+					<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uSetAbsolutePosition</Name>
+					<Type GUID="{2C01C01D-9D21-EA45-A5E4-9CEB5A61D316}">U_OdriveSetAbsolutePositionBytes</Type>
+					<BitSize>32</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETABSOLUTEPOSITION__USETABSOLUTEPOSITION</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>GetEncoderEstimates</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>stOdriveEncoderEstimates</Name>
+					<Type GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}">ST_OdriveEncoderEstimates</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>bDataExist</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uEncoderEstimates</Name>
+					<Type GUID="{B576A158-DF97-08A8-1774-4CCD82058AE3}">U_OdriveEncoderEstimatesBytes</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__UENCODERESTIMATES</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>SetInputPos</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>rInputPos</Name>
+					<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>nVelFF</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+					<BitSize>16</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>nTorqueFF</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+					<BitSize>16</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTPOS__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTPOS__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTPOS__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uSetInputPos</Name>
+					<Type GUID="{F64D4E2A-C1A3-DEB0-51DD-EB37E9DA574C}">U_OdriveSetInputPosBytes</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTPOS__USETINPUTPOS</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>SetAxisState</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>eRequestedState</Name>
+					<Type GUID="{7D038EA7-368C-87AA-D192-149C078FF033}">E_OdriveAxisState</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uSetAxisState</Name>
+					<Type GUID="{6BD3CC05-7549-192C-C115-B615DAB2CC2F}">U_OdriveSetAxisStateBytes</Type>
+					<BitSize>32</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__USETAXISSTATE</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>ClearErrors</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>byIdentify</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__CLEARERRORS__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__CLEARERRORS__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__CLEARERRORS__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>Estop</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__ESTOP__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__ESTOP__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__ESTOP__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>SetInputVel</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>rInputVel</Name>
+					<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>rInputTorqueFF</Name>
+					<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+					<BitSize>32</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nNoOfData</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTVEL__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTVEL__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTVEL__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uSetInputVel</Name>
+					<Type GUID="{EC8D408E-E367-408A-E0D8-7812898F9BC7}">U_OdriveSetInputVelBytes</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__SETINPUTVEL__USETINPUTVEL</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>GetError</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Parameter>
+				<Parameter>
+					<Name>bBusy</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bError</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>bDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Parameter>
+					<Name>stOdriveError</Name>
+					<Type GUID="{D434495D-E83F-5744-8F58-829027E72278}">ST_OdriveError</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Local>
+				<Local>
+					<Name>nRTR</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>bAddCmdDone</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>bDataExist</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+				</Local>
+				<Local>
+					<Name>nIdx</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+				</Local>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETERROR__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETERROR__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>tmrTimeOut</Name>
+					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
+					<BitSize>256</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETERROR__TMRTIMEOUT</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>uOdriveError</Name>
+					<Type GUID="{EB80EC8B-291D-89B4-2325-6083B7F7D5AB}">U_OdriveErrorBytes</Type>
+					<BitSize>64</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__ODRIVEAXISCONTROLLER__GETERROR__UODRIVEERROR</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
 			<Properties>
 				<Property>
-					<Name>pack_mode</Name>
-					<Value>1</Value>
+					<Name>PouType</Name>
+					<Value>FunctionBlock</Value>
 				</Property>
 			</Properties>
 		</DataType>
@@ -802,1138 +3059,8 @@
 				</Property>
 			</Properties>
 		</DataType>
-		<DataType>
-			<Name GUID="{2BB108BF-0CF1-A25B-8739-172E972A09CF}" AutoDeleteType="true">E_OdriveCmd</Name>
-			<BitSize>32</BitSize>
-			<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-			<EnumInfo>
-				<Text><![CDATA[Heartbeat]]></Text>
-				<Enum>1</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[Estop]]></Text>
-				<Enum>2</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[GetError]]></Text>
-				<Enum>3</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[SetAxisState]]></Text>
-				<Enum>7</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[GetEncoderEstimates]]></Text>
-				<Enum>9</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[SetControllerMode]]></Text>
-				<Enum>11</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[SetInputPos]]></Text>
-				<Enum>12</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[SetInputVel]]></Text>
-				<Enum>13</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[ClearErrors]]></Text>
-				<Enum>24</Enum>
-			</EnumInfo>
-			<EnumInfo>
-				<Text><![CDATA[Set_AbsPos]]></Text>
-				<Enum>25</Enum>
-			</EnumInfo>
-			<Properties>
-				<Property>
-					<Name>generate_implicit_init_function</Name>
-				</Property>
-			</Properties>
-		</DataType>
-		<DataType>
-			<Name GUID="{82033037-06F9-B672-223D-BB61AD00A2F7}" AutoDeleteType="true">ODriveCanSimpleTransporter</Name>
-			<BitSize>1792</BitSize>
-			<SubItem>
-				<Name>_TxData</Name>
-				<Type GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</Type>
-				<BitSize>848</BitSize>
-				<BitOffs>64</BitOffs>
-				<Properties>
-					<Property>
-						<Name>TcAddressType</Name>
-						<Value>Output</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>_RxData</Name>
-				<Type GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</Type>
-				<BitSize>848</BitSize>
-				<BitOffs>912</BitOffs>
-				<Properties>
-					<Property>
-						<Name>TcAddressType</Name>
-						<Value>Input</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>_bTxQueueNotEmpty</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<BitSize>8</BitSize>
-				<BitOffs>1760</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVECANSIMPLETRANSPORTER__SENDCMD__NSTEP</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>1776</BitOffs>
-				<Default>
-					<Value>0</Value>
-				</Default>
-			</SubItem>
-			<SubItem>
-				<Name Static="true">_nMaxMsgCount</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<Default>
-					<Value>10</Value>
-				</Default>
-			</SubItem>
-			<Method>
-				<Name>SendCmd</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>bExecute</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bBusy</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bDone</Name>
-					<Comment><![CDATA[bError : BOOL;]]></Comment>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Local>
-					<Name>nStep</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVECANSIMPLETRANSPORTER__SENDCMD__NSTEP</Value>
-						</Property>
-					</Properties>
-				</Local>
-			</Method>
-			<Method>
-				<Name>IsTxDone</Name>
-				<ReturnType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</ReturnType>
-				<ReturnBitSize>8</ReturnBitSize>
-			</Method>
-			<Method>
-				<Name>AddCmd</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>stCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bError</Name>
-					<Comment><![CDATA[bBusy : BOOL;]]></Comment>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>sErrorMsg</Name>
-					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
-					<BitSize>648</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-			</Method>
-			<Method>
-				<Name>ReceiveData</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>nNodeId</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>eODriveCmd</Name>
-					<Type GUID="{2BB108BF-0CF1-A25B-8739-172E972A09CF}">E_OdriveCmd</Type>
-					<BitSize>32</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bExist</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>stResultCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Local>
-					<Name>nIdx</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>stCurCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-				</Local>
-				<Local>
-					<Name>nCurNodeId</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nCurCmd</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-			</Method>
-			<Properties>
-				<Property>
-					<Name>PouType</Name>
-					<Value>FunctionBlock</Value>
-				</Property>
-				<Property>
-					<Name>generate_implicit_init_function</Name>
-				</Property>
-			</Properties>
-		</DataType>
-		<DataType>
-			<Name GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard" AutoDeleteType="true">R_TRIG</Name>
-			<Comment><![CDATA[
-	Rising Edge detection.
-]]></Comment>
-			<BitSize>128</BitSize>
-			<SubItem>
-				<Name>CLK</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<Comment><![CDATA[ Signal to detect ]]></Comment>
-				<BitSize>8</BitSize>
-				<BitOffs>64</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Input</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>Q</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<Comment><![CDATA[ rising edge at signal detected ]]></Comment>
-				<BitSize>8</BitSize>
-				<BitOffs>72</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Output</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>M</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<BitSize>8</BitSize>
-				<BitOffs>80</BitOffs>
-				<Properties>
-					<Property>
-						<Name>conditionalshow</Name>
-					</Property>
-				</Properties>
-			</SubItem>
-			<Properties>
-				<Property>
-					<Name>PouType</Name>
-					<Value>FunctionBlock</Value>
-				</Property>
-				<Property>
-					<Name>conditionalshow_all_locals</Name>
-				</Property>
-			</Properties>
-		</DataType>
-		<DataType>
-			<Name GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard" AutoDeleteType="true">TON</Name>
-			<BitSize>256</BitSize>
-			<SubItem>
-				<Name>IN</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<Comment><![CDATA[ starts timer with rising edge, resets timer with falling edge ]]></Comment>
-				<BitSize>8</BitSize>
-				<BitOffs>64</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Input</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>PT</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
-				<Comment><![CDATA[ time to pass, before Q is set ]]></Comment>
-				<BitSize>32</BitSize>
-				<BitOffs>96</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Input</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>Q</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<Comment><![CDATA[ gets TRUE, delay time (PT) after a rising edge at IN ]]></Comment>
-				<BitSize>8</BitSize>
-				<BitOffs>128</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Output</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>ET</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
-				<Comment><![CDATA[ elapsed time ]]></Comment>
-				<BitSize>32</BitSize>
-				<BitOffs>160</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Output</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>M</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-				<BitSize>8</BitSize>
-				<BitOffs>192</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>StartTime</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
-				<BitSize>32</BitSize>
-				<BitOffs>224</BitOffs>
-			</SubItem>
-			<Properties>
-				<Property>
-					<Name>PouType</Name>
-					<Value>FunctionBlock</Value>
-				</Property>
-			</Properties>
-		</DataType>
-		<DataType>
-			<Name GUID="{B576A158-DF97-08A8-1774-4CCD82058AE3}" AutoDeleteType="true">U_OdriveEncoderEstimatesBytes</Name>
-			<BitSize>64</BitSize>
-			<SubItem>
-				<Name>stEncoderEstimates</Name>
-				<Type GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}">ST_OdriveEncoderEstimates</Type>
-				<BitSize>64</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>aBytes</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>8</Elements>
-				</ArrayInfo>
-				<BitSize>64</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{EB80EC8B-291D-89B4-2325-6083B7F7D5AB}" AutoDeleteType="true">U_OdriveErrorBytes</Name>
-			<BitSize>64</BitSize>
-			<SubItem>
-				<Name>stOdriveError</Name>
-				<Type GUID="{D434495D-E83F-5744-8F58-829027E72278}">ST_OdriveError</Type>
-				<BitSize>64</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>aBytes</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>8</Elements>
-				</ArrayInfo>
-				<BitSize>64</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{557C5254-A528-C8A3-580A-EC82C8B55F6C}" AutoDeleteType="true">U_OdriveHeartbeatBytes</Name>
-			<BitSize>56</BitSize>
-			<SubItem>
-				<Name>stHeartbeat</Name>
-				<Type GUID="{57704CAA-38D6-C912-CB9D-08A8F5C32ED7}">ST_OdriveHeartbeat</Type>
-				<BitSize>56</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>aBytes</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>7</Elements>
-				</ArrayInfo>
-				<BitSize>56</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{4CF99737-3F91-F38F-863B-39E57F44881F}" AutoDeleteType="true">ST_OdriveSetAxisState</Name>
-			<BitSize>8</BitSize>
-			<SubItem>
-				<Name>eRequestedState</Name>
-				<Type GUID="{7D038EA7-368C-87AA-D192-149C078FF033}">E_OdriveAxisState</Type>
-				<BitSize>8</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<Properties>
-				<Property>
-					<Name>pack_mode</Name>
-					<Value>1</Value>
-				</Property>
-			</Properties>
-		</DataType>
-		<DataType>
-			<Name GUID="{6BD3CC05-7549-192C-C115-B615DAB2CC2F}" AutoDeleteType="true">U_OdriveSetAxisStateBytes</Name>
-			<BitSize>32</BitSize>
-			<SubItem>
-				<Name>stSetAxisState</Name>
-				<Type GUID="{4CF99737-3F91-F38F-863B-39E57F44881F}">ST_OdriveSetAxisState</Type>
-				<BitSize>8</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>aBytes</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>4</Elements>
-				</ArrayInfo>
-				<BitSize>32</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{83470851-0A08-393D-518A-3BAB7B7CF923}" AutoDeleteType="true">ODriveAxisController</Name>
-			<BitSize>3968</BitSize>
-			<SubItem>
-				<Name>NodeId</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>64</BitOffs>
-				<Properties>
-					<Property>
-						<Name>ItemType</Name>
-						<Value>Input</Value>
-					</Property>
-				</Properties>
-			</SubItem>
-			<SubItem>
-				<Name>_fbODriveCanSimpleTransporter</Name>
-				<Type GUID="{82033037-06F9-B672-223D-BB61AD00A2F7}">ODriveCanSimpleTransporter</Type>
-				<BitSize>1792</BitSize>
-				<BitOffs>128</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__NSTEP</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>1920</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__RTRIG</Name>
-				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-				<BitSize>128</BitSize>
-				<BitOffs>1984</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__TMRTIMEOUT</Name>
-				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-				<BitSize>256</BitSize>
-				<BitOffs>2112</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__UENCODERESTIMATES</Name>
-				<Type GUID="{B576A158-DF97-08A8-1774-4CCD82058AE3}">U_OdriveEncoderEstimatesBytes</Type>
-				<BitSize>64</BitSize>
-				<BitOffs>2368</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETERROR__NSTEP</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>2432</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETERROR__RTRIG</Name>
-				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-				<BitSize>128</BitSize>
-				<BitOffs>2496</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETERROR__TMRTIMEOUT</Name>
-				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-				<BitSize>256</BitSize>
-				<BitOffs>2624</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETERROR__UODRIVEERROR</Name>
-				<Type GUID="{EB80EC8B-291D-89B4-2325-6083B7F7D5AB}">U_OdriveErrorBytes</Type>
-				<BitSize>64</BitSize>
-				<BitOffs>2880</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__NSTEP</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>2944</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__RTRIG</Name>
-				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-				<BitSize>128</BitSize>
-				<BitOffs>3008</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__TMRTIMEOUT</Name>
-				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-				<BitSize>256</BitSize>
-				<BitOffs>3136</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__UODRIVEHEARTBEAT</Name>
-				<Type GUID="{557C5254-A528-C8A3-580A-EC82C8B55F6C}">U_OdriveHeartbeatBytes</Type>
-				<BitSize>56</BitSize>
-				<BitOffs>3392</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__NSTEP</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>3456</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__RTRIG</Name>
-				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-				<BitSize>128</BitSize>
-				<BitOffs>3520</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__TMRTIMEOUT</Name>
-				<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-				<BitSize>256</BitSize>
-				<BitOffs>3648</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>__ODRIVEAXISCONTROLLER__SETAXISSTATE__USETAXISSTATE</Name>
-				<Type GUID="{6BD3CC05-7549-192C-C115-B615DAB2CC2F}">U_OdriveSetAxisStateBytes</Type>
-				<BitSize>32</BitSize>
-				<BitOffs>3904</BitOffs>
-			</SubItem>
-			<Method>
-				<Name>GetEncoderEstimates</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>bExecute</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bBusy</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bError</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>sErrorMsg</Name>
-					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
-					<BitSize>648</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>stOdriveEncoderEstimates</Name>
-					<Type GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}">ST_OdriveEncoderEstimates</Type>
-					<BitSize>64</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Local>
-					<Name>stCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-				</Local>
-				<Local>
-					<Name>nRTR</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>bAddCmdDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>bDataExist</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>nIdx</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nStep</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__NSTEP</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>rTrig</Name>
-					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-					<BitSize>128</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__RTRIG</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>tmrTimeOut</Name>
-					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-					<BitSize>256</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__TMRTIMEOUT</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>uEncoderEstimates</Name>
-					<Type GUID="{B576A158-DF97-08A8-1774-4CCD82058AE3}">U_OdriveEncoderEstimatesBytes</Type>
-					<BitSize>64</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETENCODERESTIMATES__UENCODERESTIMATES</Value>
-						</Property>
-					</Properties>
-				</Local>
-			</Method>
-			<Method>
-				<Name>GetHeartBeat</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>bExecute</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bBusy</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bError</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>sErrorMsg</Name>
-					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
-					<BitSize>648</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>stOdriveHeartBeat</Name>
-					<Type GUID="{57704CAA-38D6-C912-CB9D-08A8F5C32ED7}">ST_OdriveHeartbeat</Type>
-					<BitSize>56</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Local>
-					<Name>stCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-				</Local>
-				<Local>
-					<Name>nRTR</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>bAddCmdDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>bDataExist</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>nIdx</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nStep</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__NSTEP</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>rTrig</Name>
-					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-					<BitSize>128</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__RTRIG</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>tmrTimeOut</Name>
-					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-					<BitSize>256</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__TMRTIMEOUT</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>uOdriveHeartBeat</Name>
-					<Type GUID="{557C5254-A528-C8A3-580A-EC82C8B55F6C}">U_OdriveHeartbeatBytes</Type>
-					<BitSize>56</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETHEARTBEAT__UODRIVEHEARTBEAT</Value>
-						</Property>
-					</Properties>
-				</Local>
-			</Method>
-			<Method>
-				<Name>SetAxisState</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>bExecute</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>eRequestedState</Name>
-					<Type GUID="{7D038EA7-368C-87AA-D192-149C078FF033}">E_OdriveAxisState</Type>
-					<BitSize>8</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bBusy</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bError</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>sErrorMsg</Name>
-					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
-					<BitSize>648</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Local>
-					<Name>stCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-				</Local>
-				<Local>
-					<Name>nRTR</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nNoOfData</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>bAddCmdDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>nIdx</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nStep</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__NSTEP</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>rTrig</Name>
-					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-					<BitSize>128</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__RTRIG</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>tmrTimeOut</Name>
-					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-					<BitSize>256</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__TMRTIMEOUT</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>uSetAxisState</Name>
-					<Type GUID="{6BD3CC05-7549-192C-C115-B615DAB2CC2F}">U_OdriveSetAxisStateBytes</Type>
-					<BitSize>32</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__SETAXISSTATE__USETAXISSTATE</Value>
-						</Property>
-					</Properties>
-				</Local>
-			</Method>
-			<Method>
-				<Name>GetError</Name>
-				<ReturnBitSize X64="64">32</ReturnBitSize>
-				<Parameter>
-					<Name>bExecute</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Parameter>
-				<Parameter>
-					<Name>bBusy</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bError</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>sErrorMsg</Name>
-					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
-					<BitSize>648</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>bDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Parameter>
-					<Name>stOdriveError</Name>
-					<Type GUID="{D434495D-E83F-5744-8F58-829027E72278}">ST_OdriveError</Type>
-					<BitSize>64</BitSize>
-					<Properties>
-						<Property>
-							<Name>ItemType</Name>
-							<Value>Output</Value>
-						</Property>
-					</Properties>
-				</Parameter>
-				<Local>
-					<Name>stCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
-				</Local>
-				<Local>
-					<Name>nRTR</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>bAddCmdDone</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>bDataExist</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
-					<BitSize>8</BitSize>
-				</Local>
-				<Local>
-					<Name>nIdx</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nStep</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETERROR__NSTEP</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>rTrig</Name>
-					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
-					<BitSize>128</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETERROR__RTRIG</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>tmrTimeOut</Name>
-					<Type GUID="{1337BBBA-9A3F-D9E7-4ED6-FA23E60881AB}" Namespace="Tc2_Standard">TON</Type>
-					<BitSize>256</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETERROR__TMRTIMEOUT</Value>
-						</Property>
-					</Properties>
-				</Local>
-				<Local>
-					<Name>uOdriveError</Name>
-					<Type GUID="{EB80EC8B-291D-89B4-2325-6083B7F7D5AB}">U_OdriveErrorBytes</Type>
-					<BitSize>64</BitSize>
-					<Properties>
-						<Property>
-							<Name>uselocation</Name>
-							<Value>__ODRIVEAXISCONTROLLER__GETERROR__UODRIVEERROR</Value>
-						</Property>
-					</Properties>
-				</Local>
-			</Method>
-			<Properties>
-				<Property>
-					<Name>PouType</Name>
-					<Value>FunctionBlock</Value>
-				</Property>
-			</Properties>
-		</DataType>
 	</DataTypes>
-	<Instance Id="#x08502000" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{0AB96F32-43D8-0F82-93DA-97180CBC66C2}">
+	<Instance Id="#x08502000" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{A5C8A7B5-BADA-9007-83D8-A4CD29E41393}">
 		<Name>__FILENAME__</Name>
 		<TmcDesc GUID="{EABECB65-8C61-4E22-88A2-C2FE6907D8E6}" TcSmClass="TComPlcObjDef">
 			<Name>Untitled1</Name>
@@ -2040,7 +3167,7 @@
 								<Value>Input</Value>
 							</Property>
 						</Properties>
-						<BitOffs>3704912</BitOffs>
+						<BitOffs>3083472</BitOffs>
 					</Symbol>
 				</DataArea>
 				<DataArea>
@@ -2058,7 +3185,7 @@
 								<Value>Output</Value>
 							</Property>
 						</Properties>
-						<BitOffs>3704064</BitOffs>
+						<BitOffs>3082624</BitOffs>
 					</Symbol>
 				</DataArea>
 				<DataArea>
@@ -2207,28 +3334,106 @@
 						<BitOffs>3080720</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE.bSetAxisStateExecute</Name>
+						<Name>ODRIVE_SAMPLE.bClearErrorsExecute</Name>
 						<BitSize>8</BitSize>
 						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
 						<BitOffs>3080728</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE.bSetAxisStateBusy</Name>
+						<Name>ODRIVE_SAMPLE.byClearErrorsIdentify</Name>
 						<BitSize>8</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
 						<BitOffs>3080736</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE.bSetAxisStateError</Name>
+						<Name>ODRIVE_SAMPLE.bClearErrorsBusy</Name>
 						<BitSize>8</BitSize>
 						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
 						<BitOffs>3080744</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE.bSetAxisStateDone</Name>
+						<Name>ODRIVE_SAMPLE.bClearErrorsError</Name>
 						<BitSize>8</BitSize>
 						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
 						<BitOffs>3080752</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bClearErrorsDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3080760</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE._fbODriveAxis</Name>
+						<BitSize>6784</BitSize>
+						<BaseType GUID="{CFF89D4B-9174-C551-8CC4-A913BF4DE196}">ODriveAxisController</BaseType>
+						<BitOffs>3082432</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sClearErrorsErrorMsg</Name>
+						<BitSize>648</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
+						<BitOffs>3089216</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bEstopExecute</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3089864</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bEstopBusy</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3089872</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bEstopError</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3089880</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sEstopErrorMsg</Name>
+						<BitSize>648</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
+						<BitOffs>3089888</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bEstopDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3090536</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAxisStateExecute</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3090544</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAxisStateBusy</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3090552</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAxisStateError</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3090560</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sSetAxisStateErrorMsg</Name>
+						<BitSize>648</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
+						<BitOffs>3090568</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAxisStateDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3091216</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>ODRIVE_SAMPLE.eRequestedAxisState</Name>
@@ -2237,31 +3442,199 @@
 						<Default>
 							<EnumText>E_OdriveAxisState.ClosedLoopControl</EnumText>
 						</Default>
-						<BitOffs>3080760</BitOffs>
+						<BitOffs>3091224</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE.sSetAxisStateErrorMsg</Name>
+						<Name>ODRIVE_SAMPLE.bSetControllerModeExecute</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3091232</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetControllerModeBusy</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3091240</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetControllerModeError</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3091248</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetControllerModeDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3091256</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.eRequestedControlMode</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{76B07073-67C8-196F-6E92-A87BFB54CB6F}">E_OdriveControlMode</BaseType>
+						<Default>
+							<EnumText>E_OdriveControlMode.Position</EnumText>
+						</Default>
+						<BitOffs>3091264</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.eRequestedInputMode</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{9F3AD39B-1060-9713-F97F-E9D00DD01EA2}">E_OdriveInputMode</BaseType>
+						<Default>
+							<EnumText>E_OdriveInputMode.Passthrough</EnumText>
+						</Default>
+						<BitOffs>3091296</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sSetControllerModeErrorMsg</Name>
 						<BitSize>648</BitSize>
 						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
-						<BitOffs>3086016</BitOffs>
+						<BitOffs>3091328</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputPosExecute</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3091976</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.nRequestedInputPosVelFF</Name>
+						<BitSize>16</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+						<BitOffs>3091984</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.rRequestedInputPos</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+						<BitOffs>3092000</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.nRequestedInputPosTorqueFF</Name>
+						<BitSize>16</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+						<BitOffs>3092032</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputPosBusy</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3092048</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputPosError</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3092056</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sSetInputPosErrorMsg</Name>
+						<BitSize>648</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
+						<BitOffs>3092064</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputPosDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3092712</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputVelExecute</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3092720</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputVelBusy</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3092728</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.rRequestedInputVel</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+						<BitOffs>3092736</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.rRequestedInputVelTorqueFF</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+						<BitOffs>3092768</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputVelError</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3092800</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sSetInputVelErrorMsg</Name>
+						<BitSize>648</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
+						<BitOffs>3092808</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetInputVelDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3093456</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAbsolutePositionExecute</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3093464</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.rRequestedAbsolutePosition</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-00000000000D}">REAL</BaseType>
+						<BitOffs>3093472</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAbsolutePositionBusy</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3093504</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAbsolutePositionError</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3093512</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.sSetAbsolutePositionErrorMsg</Name>
+						<BitSize>648</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</BaseType>
+						<BitOffs>3093520</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE.bSetAbsolutePositionDone</Name>
+						<BitSize>8</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+						<BitOffs>3094168</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>ODRIVE_SAMPLE.stOdriveHeartBeat</Name>
 						<BitSize>56</BitSize>
 						<BaseType GUID="{57704CAA-38D6-C912-CB9D-08A8F5C32ED7}">ST_OdriveHeartbeat</BaseType>
-						<BitOffs>3086664</BitOffs>
+						<BitOffs>3094176</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>ODRIVE_SAMPLE.stOdriveEncoderEstimates</Name>
 						<BitSize>64</BitSize>
 						<BaseType GUID="{72A45926-EF34-7ADA-5747-93D50A889EB0}">ST_OdriveEncoderEstimates</BaseType>
-						<BitOffs>3086720</BitOffs>
+						<BitOffs>3094232</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>ODRIVE_SAMPLE.stOdriveError</Name>
 						<BitSize>64</BitSize>
 						<BaseType GUID="{D434495D-E83F-5744-8F58-829027E72278}">ST_OdriveError</BaseType>
-						<BitOffs>3086784</BitOffs>
+						<BitOffs>3094296</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>GVL_ODrive.nMaxMsgCount</Name>
@@ -2275,7 +3648,7 @@
 								<Name>TcVarGlobal</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3086848</BitOffs>
+						<BitOffs>3094368</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>GVL_ODrive.nCmd_Mask</Name>
@@ -2289,7 +3662,7 @@
 								<Name>TcVarGlobal</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3086864</BitOffs>
+						<BitOffs>3094384</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>GVL_ODrive.nCmd_Shift</Name>
@@ -2303,7 +3676,7 @@
 								<Name>TcVarGlobal</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3086880</BitOffs>
+						<BitOffs>3094400</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>GVL_ODrive.nNodeId_Mask</Name>
@@ -2317,7 +3690,7 @@
 								<Name>TcVarGlobal</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3086896</BitOffs>
+						<BitOffs>3094416</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>GVL_ODrive.nNodeId_Shift</Name>
@@ -2331,7 +3704,7 @@
 								<Name>TcVarGlobal</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3086912</BitOffs>
+						<BitOffs>3094432</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>GVL_ODrive.nReceiveData_TimeOut</Name>
@@ -2345,7 +3718,21 @@
 								<Name>TcVarGlobal</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3086944</BitOffs>
+						<BitOffs>3094464</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>TwinCAT_SystemInfoVarList._TaskPouOid_PlcTask</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+						<Properties>
+							<Property>
+								<Name>TcVarGlobal</Name>
+							</Property>
+							<Property>
+								<Name>no_init</Name>
+							</Property>
+						</Properties>
+						<BitOffs>3094752</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList._AppInfo</Name>
@@ -2359,7 +3746,7 @@
 								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3087232</BitOffs>
+						<BitOffs>3094784</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList._TaskInfo</Name>
@@ -2377,21 +3764,7 @@
 								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3089280</BitOffs>
-					</Symbol>
-					<Symbol>
-						<Name>TwinCAT_SystemInfoVarList._TaskPouOid_PlcTask</Name>
-						<BitSize>32</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-						<Properties>
-							<Property>
-								<Name>TcVarGlobal</Name>
-							</Property>
-							<Property>
-								<Name>no_init</Name>
-							</Property>
-						</Properties>
-						<BitOffs>3090304</BitOffs>
+						<BitOffs>3096832</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList._TaskOid_PlcTask</Name>
@@ -2405,7 +3778,7 @@
 								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3090336</BitOffs>
+						<BitOffs>3097856</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList.__PlcTask</Name>
@@ -2426,13 +3799,7 @@
 								<Value>PlcTask</Value>
 							</Property>
 						</Properties>
-						<BitOffs>3090368</BitOffs>
-					</Symbol>
-					<Symbol>
-						<Name>ODRIVE_SAMPLE._fbODriveAxis</Name>
-						<BitSize>3968</BitSize>
-						<BaseType GUID="{83470851-0A08-393D-518A-3BAB7B7CF923}">ODriveAxisController</BaseType>
-						<BitOffs>3703872</BitOffs>
+						<BitOffs>3097920</BitOffs>
 					</Symbol>
 				</DataArea>
 			</DataAreas>
@@ -2443,11 +3810,11 @@
 				</Property>
 				<Property>
 					<Name>ChangeDate</Name>
-					<Value>2026-03-16T17:04:18</Value>
+					<Value>2026-03-16T17:30:29</Value>
 				</Property>
 				<Property>
 					<Name>GeneratedCodeSize</Name>
-					<Value>69632</Value>
+					<Value>77824</Value>
 				</Property>
 				<Property>
 					<Name>GlobalDataSize</Name>
@@ -2474,7 +3841,7 @@
 				</Value>
 				<Value>
 					<Name>Application Timestamp</Name>
-					<Value>1773680658</Value>
+					<Value>1773682229</Value>
 				</Value>
 				<Value>
 					<Name>Symbolic Mapping</Name>

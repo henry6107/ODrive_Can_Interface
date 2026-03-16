@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveSetAbsolutePosition" Id="{2d56f45e-496d-4350-b95f-dbf7c513bf66}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveSetAbsolutePosition :
+STRUCT
+    rPosition : REAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -51,7 +51,22 @@
     <Compile Include="DUTs\DUTs\ODrive\ST_OdriveHeartbeat.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveSetAbsolutePosition.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\DUTs\ODrive\ST_OdriveSetAxisState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveSetControllerMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveSetInputPos.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\ST_OdriveSetInputVel.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveSetAbsolutePositionBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveEncoderEstimatesBytes.TcDUT">
@@ -64,6 +79,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\DUTs\ODrive\U_OdriveSetAxisStateBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveSetControllerModeBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveSetInputPosBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveSetInputVelBytes.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GVLs\GVL_ODrive.TcGVL">

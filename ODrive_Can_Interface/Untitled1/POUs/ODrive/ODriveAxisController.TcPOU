@@ -17,6 +17,162 @@ END_VAR
     <Implementation>
       <ST><![CDATA[_fbODriveCanSimpleTransporter();]]></ST>
     </Implementation>
+    <Method Name="ClearErrors" Id="{9f6d8e5d-e30f-48f7-bcb6-5c8ff9cd4fa8}">
+      <Declaration><![CDATA[METHOD ClearErrors
+VAR_INPUT
+	bExecute : BOOL;
+	byIdentify : BYTE;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 0;
+	nNoOfData : UINT := 1;
+	nIdx : UINT;
+	
+	bAddCmdDone : BOOL;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.ClearErrors), 5) OR SHL(nRTR, 4) OR nNoOfData;
+		stCanMsg.Data[0] := byIdentify;
+		FOR nIdx := 1 TO 7 DO
+			stCanMsg.Data[nIdx] := 0;
+		END_FOR
+		
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Wait command sent
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		IF tmrTimeOut.Q THEN
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+		
+		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			bDone := TRUE;
+			nStep := 3;
+		
+		ELSE
+			bBusy := TRUE;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Estop" Id="{f764a4b6-a93b-466a-9df9-8df30e9d4691}">
+      <Declaration><![CDATA[METHOD Estop
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 0;
+	nNoOfData : UINT := 0;
+	nIdx : UINT;
+	
+	bAddCmdDone : BOOL;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.Estop), 5) OR SHL(nRTR, 4) OR nNoOfData;
+		FOR nIdx := 0 TO 7 DO
+			stCanMsg.Data[nIdx] := 0;
+		END_FOR
+		
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Wait command sent
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		IF tmrTimeOut.Q THEN
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+		
+		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			bDone := TRUE;
+			nStep := 3;
+		
+		ELSE
+			bBusy := TRUE;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetEncoderEstimates" Id="{14a2520e-b7da-434d-8e95-8a742dcda8c6}">
       <Declaration><![CDATA[METHOD GetEncoderEstimates
 VAR_INPUT
@@ -266,6 +422,89 @@ END_VAR
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="SetAbsolutePosition" Id="{9f8e5ac5-4f6b-47bc-8243-567f76d299a4}">
+      <Declaration><![CDATA[METHOD SetAbsolutePosition
+VAR_INPUT
+	bExecute : BOOL;
+	rPosition : REAL;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 0;
+	nNoOfData : UINT := 4;
+	nIdx : UINT;
+	
+	bAddCmdDone : BOOL;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+	uSetAbsolutePosition : U_OdriveSetAbsolutePositionBytes;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.Set_AbsPos), 5) OR SHL(nRTR, 4) OR nNoOfData;
+		uSetAbsolutePosition.stSetAbsolutePosition.rPosition := rPosition;
+		FOR nIdx := 0 TO 3 DO
+			stCanMsg.Data[nIdx] := uSetAbsolutePosition.aBytes[nIdx];
+		END_FOR
+		FOR nIdx := 4 TO 7 DO
+			stCanMsg.Data[nIdx] := 0;
+		END_FOR
+		
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Wait command sent
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		IF tmrTimeOut.Q THEN
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+		
+		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			bDone := TRUE;
+			nStep := 3;
+		
+		ELSE
+			bBusy := TRUE;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SetAxisState" Id="{5798b7a5-f8dd-4373-8c17-e10977a10555}">
       <Declaration><![CDATA[METHOD SetAxisState
 VAR_INPUT
@@ -353,8 +592,267 @@ END_VAR
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="SetControllerMode" Id="{a9cd6d7b-4042-402b-9f59-94d4e2c2cfdb}">
+      <Declaration><![CDATA[METHOD SetControllerMode
+VAR_INPUT
+	bExecute : BOOL;
+	eControlMode : E_OdriveControlMode;
+	eInputMode : E_OdriveInputMode;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 0;
+	nNoOfData : UINT := 8;
+	nIdx : UINT;
+	
+	bAddCmdDone : BOOL;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+	uSetControllerMode : U_OdriveSetControllerModeBytes;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetControllerMode), 5) OR SHL(nRTR, 4) OR nNoOfData;
+		uSetControllerMode.stSetControllerMode.eControlMode := eControlMode;
+		uSetControllerMode.stSetControllerMode.eInputMode := eInputMode;
+		
+		FOR nIdx := 0 TO 7 DO
+			stCanMsg.Data[nIdx] := uSetControllerMode.aBytes[nIdx];
+		END_FOR
+		
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Wait command sent
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		IF tmrTimeOut.Q THEN
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+		
+		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			bDone := TRUE;
+			nStep := 3;
+		
+		ELSE
+			bBusy := TRUE;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetInputPos" Id="{81ed650b-d2bf-42a3-9158-c7dfced80cb0}">
+      <Declaration><![CDATA[METHOD SetInputPos
+VAR_INPUT
+	bExecute : BOOL;
+	rInputPos : REAL;
+	nVelFF : INT;
+	nTorqueFF : INT;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 0;
+	nNoOfData : UINT := 8;
+	nIdx : UINT;
+	
+	bAddCmdDone : BOOL;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+	uSetInputPos : U_OdriveSetInputPosBytes;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetInputPos), 5) OR SHL(nRTR, 4) OR nNoOfData;
+		uSetInputPos.stSetInputPos.rInputPos := rInputPos;
+		uSetInputPos.stSetInputPos.nVelFF := nVelFF;
+		uSetInputPos.stSetInputPos.nTorqueFF := nTorqueFF;
+		
+		FOR nIdx := 0 TO 7 DO
+			stCanMsg.Data[nIdx] := uSetInputPos.aBytes[nIdx];
+		END_FOR
+		
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Wait command sent
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		IF tmrTimeOut.Q THEN
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+		
+		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			bDone := TRUE;
+			nStep := 3;
+		
+		ELSE
+			bBusy := TRUE;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetInputVel" Id="{69f66988-c526-4b2a-8b34-25064047a893}">
+      <Declaration><![CDATA[METHOD SetInputVel
+VAR_INPUT
+	bExecute : BOOL;
+	rInputVel : REAL;
+	rInputTorqueFF : REAL;
+END_VAR
+
+VAR_OUTPUT
+	bBusy : BOOL;
+	bError : BOOL;
+	sErrorMsg : STRING;
+	bDone : BOOL;
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	nRTR : UINT := 0;
+	nNoOfData : UINT := 8;
+	nIdx : UINT;
+	
+	bAddCmdDone : BOOL;
+END_VAR
+
+VAR_INST
+	nStep : UINT;
+	rTrig : R_TRIG;
+	tmrTimeOut : TON;
+	uSetInputVel : U_OdriveSetInputVelBytes;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nStep OF
+	0:	// Idle
+		rTrig(CLK:= bExecute);
+		IF rTrig.Q THEN
+			bBusy := TRUE;
+			nStep := 1;
+		END_IF
+	
+	1: // Add command
+		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetInputVel), 5) OR SHL(nRTR, 4) OR nNoOfData;
+		uSetInputVel.stSetInputVel.rInputVel := rInputVel;
+		uSetInputVel.stSetInputVel.rInputTorqueFF := rInputTorqueFF;
+		
+		FOR nIdx := 0 TO 7 DO
+			stCanMsg.Data[nIdx] := uSetInputVel.aBytes[nIdx];
+		END_FOR
+		
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		IF bAddCmdDone THEN
+			bBusy := TRUE;
+			nStep := 2;
+		END_IF
+		
+	2: // Wait command sent
+		tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		IF tmrTimeOut.Q THEN
+			bError := TRUE;
+			sErrorMsg := 'Time out !';
+		
+		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			bDone := TRUE;
+			nStep := 3;
+		
+		ELSE
+			bBusy := TRUE;
+		END_IF
+	
+	3:	// Finish
+		IF bExecute THEN
+			bDone := TRUE;
+			
+		ELSE
+			bDone := FALSE;
+			rTrig(CLK:= FALSE);
+			tmrTimeOut(IN:= FALSE);
+			nStep := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="ODriveAxisController">
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.ClearErrors">
+      <LineId Id="3" Count="45" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.Estop">
+      <LineId Id="3" Count="44" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetEncoderEstimates">
       <LineId Id="83" Count="19" />
@@ -422,6 +920,10 @@ END_CASE]]></ST>
       <LineId Id="107" Count="0" />
       <LineId Id="12" Count="0" />
     </LineIds>
+    <LineIds Name="ODriveAxisController.SetAbsolutePosition">
+      <LineId Id="3" Count="48" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
     <LineIds Name="ODriveAxisController.SetAxisState">
       <LineId Id="83" Count="21" />
       <LineId Id="108" Count="0" />
@@ -443,6 +945,18 @@ END_CASE]]></ST>
       <LineId Id="138" Count="0" />
       <LineId Id="107" Count="0" />
       <LineId Id="12" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.SetControllerMode">
+      <LineId Id="3" Count="47" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.SetInputPos">
+      <LineId Id="3" Count="48" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.SetInputVel">
+      <LineId Id="3" Count="47" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

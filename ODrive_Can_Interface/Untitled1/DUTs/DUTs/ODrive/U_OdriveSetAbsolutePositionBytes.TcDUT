@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="U_OdriveSetAbsolutePositionBytes" Id="{f9341c3f-5ddd-462b-900e-3af1480b55de}">
+    <Declaration><![CDATA[TYPE U_OdriveSetAbsolutePositionBytes :
+UNION
+    stSetAbsolutePosition : ST_OdriveSetAbsolutePosition;
+    aBytes : ARRAY[0..3] OF BYTE;
+END_UNION
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

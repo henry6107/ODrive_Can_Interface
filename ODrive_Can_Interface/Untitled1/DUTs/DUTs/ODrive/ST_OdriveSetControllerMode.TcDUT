@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveSetControllerMode" Id="{b4f376cf-5b70-447e-9da0-b6e0df34e8e1}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveSetControllerMode :
+STRUCT
+    eControlMode : E_OdriveControlMode;
+    eInputMode : E_OdriveInputMode;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

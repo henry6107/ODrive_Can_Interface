@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_OdriveSetInputPos" Id="{9382bf38-4b20-4838-8882-b6b2188da7be}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_OdriveSetInputPos :
+STRUCT
+    rInputPos : REAL;
+    nVelFF : INT;
+    nTorqueFF : INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

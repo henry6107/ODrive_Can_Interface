@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <DUT Name="E_OdriveInputMode" Id="{95a2bdb4-0c44-4852-9860-0786856c9726}">
     <Declaration><![CDATA[TYPE E_OdriveInputMode :
@@ -7,11 +7,11 @@
     Passthrough := 1,
     VelRamp := 2,
     PosFilter := 3,
-    //MixChannels := 4,
-    TrapTraj := 5
-    //TorqueRamp := 6,
-    //Mirror := 7,
-    //Tuning := 8
+    MixChannels := 4,
+    TrapTraj := 5,
+    TorqueRamp := 6,
+    Mirror := 7,
+    Tuning := 8
 ) UDINT;
 END_TYPE
 ]]></Declaration>

@@ -6,6 +6,19 @@ VAR
 	_fbODriveAxis : ODriveAxisController;
 	bExecute : BOOL;
 	
+	bClearErrorsExecute : BOOL;
+	byClearErrorsIdentify : BYTE;
+	bClearErrorsBusy : BOOL;
+	bClearErrorsError : BOOL;
+	sClearErrorsErrorMsg : STRING;
+	bClearErrorsDone : BOOL;
+	
+	bEstopExecute : BOOL;
+	bEstopBusy : BOOL;
+	bEstopError : BOOL;
+	sEstopErrorMsg : STRING;
+	bEstopDone : BOOL;
+	
 	bSetAxisStateExecute : BOOL;
 	bSetAxisStateBusy : BOOL;
 	bSetAxisStateError : BOOL;
@@ -13,19 +26,102 @@ VAR
 	bSetAxisStateDone : BOOL;
 	eRequestedAxisState : E_OdriveAxisState := E_OdriveAxisState.ClosedLoopControl;
 	
+	bSetControllerModeExecute : BOOL;
+	eRequestedControlMode : E_OdriveControlMode := E_OdriveControlMode.Position;
+	eRequestedInputMode : E_OdriveInputMode := E_OdriveInputMode.Passthrough;
+	bSetControllerModeBusy : BOOL;
+	bSetControllerModeError : BOOL;
+	sSetControllerModeErrorMsg : STRING;
+	bSetControllerModeDone : BOOL;
+	
+	bSetInputPosExecute : BOOL;
+	rRequestedInputPos : REAL;
+	nRequestedInputPosVelFF : INT;
+	nRequestedInputPosTorqueFF : INT;
+	bSetInputPosBusy : BOOL;
+	bSetInputPosError : BOOL;
+	sSetInputPosErrorMsg : STRING;
+	bSetInputPosDone : BOOL;
+	
+	bSetInputVelExecute : BOOL;
+	rRequestedInputVel : REAL;
+	rRequestedInputVelTorqueFF : REAL;
+	bSetInputVelBusy : BOOL;
+	bSetInputVelError : BOOL;
+	sSetInputVelErrorMsg : STRING;
+	bSetInputVelDone : BOOL;
+	
+	bSetAbsolutePositionExecute : BOOL;
+	rRequestedAbsolutePosition : REAL;
+	bSetAbsolutePositionBusy : BOOL;
+	bSetAbsolutePositionError : BOOL;
+	sSetAbsolutePositionErrorMsg : STRING;
+	bSetAbsolutePositionDone : BOOL;
+	
 	stOdriveHeartBeat : ST_OdriveHeartbeat;
 	stOdriveEncoderEstimates : ST_OdriveEncoderEstimates;
 	stOdriveError : ST_OdriveError;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_fbODriveAxis.SetAxisState(
+      <ST><![CDATA[_fbODriveAxis.ClearErrors(
+	bExecute:= bClearErrorsExecute,
+	byIdentify:= byClearErrorsIdentify,
+	bBusy=> bClearErrorsBusy,
+	bError=> bClearErrorsError,
+	sErrorMsg=> sClearErrorsErrorMsg,
+	bDone=> bClearErrorsDone
+);
+_fbODriveAxis.Estop(
+	bExecute:= bEstopExecute,
+	bBusy=> bEstopBusy,
+	bError=> bEstopError,
+	sErrorMsg=> sEstopErrorMsg,
+	bDone=> bEstopDone
+);
+_fbODriveAxis.SetAxisState(
 	bExecute:= bSetAxisStateExecute,
 	eRequestedState:= eRequestedAxisState,
 	bBusy=> bSetAxisStateBusy,
 	bError=> bSetAxisStateError,
 	sErrorMsg=> sSetAxisStateErrorMsg,
 	bDone=> bSetAxisStateDone
+);
+_fbODriveAxis.SetControllerMode(
+	bExecute:= bSetControllerModeExecute,
+	eControlMode:= eRequestedControlMode,
+	eInputMode:= eRequestedInputMode,
+	bBusy=> bSetControllerModeBusy,
+	bError=> bSetControllerModeError,
+	sErrorMsg=> sSetControllerModeErrorMsg,
+	bDone=> bSetControllerModeDone
+);
+_fbODriveAxis.SetInputPos(
+	bExecute:= bSetInputPosExecute,
+	rInputPos:= rRequestedInputPos,
+	nVelFF:= nRequestedInputPosVelFF,
+	nTorqueFF:= nRequestedInputPosTorqueFF,
+	bBusy=> bSetInputPosBusy,
+	bError=> bSetInputPosError,
+	sErrorMsg=> sSetInputPosErrorMsg,
+	bDone=> bSetInputPosDone
+);
+_fbODriveAxis.SetInputVel(
+	bExecute:= bSetInputVelExecute,
+	rInputVel:= rRequestedInputVel,
+	rInputTorqueFF:= rRequestedInputVelTorqueFF,
+	bBusy=> bSetInputVelBusy,
+	bError=> bSetInputVelError,
+	sErrorMsg=> sSetInputVelErrorMsg,
+	bDone=> bSetInputVelDone
+);
+_fbODriveAxis.SetAbsolutePosition(
+	bExecute:= bSetAbsolutePositionExecute,
+	rPosition:= rRequestedAbsolutePosition,
+	bBusy=> bSetAbsolutePositionBusy,
+	bError=> bSetAbsolutePositionError,
+	sErrorMsg=> sSetAbsolutePositionErrorMsg,
+	bDone=> bSetAbsolutePositionDone
 );
 _fbODriveAxis.GetHeartBeat( bExecute:= bExecute, stOdriveHeartBeat=> stOdriveHeartBeat );
 _fbODriveAxis.GetEncoderEstimates( bExecute:= bExecute, stOdriveEncoderEstimates=> stOdriveEncoderEstimates );
