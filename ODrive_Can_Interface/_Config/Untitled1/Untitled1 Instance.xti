@@ -29,6 +29,59 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
+			<Name GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}" AutoDeleteType="true">ST_CanMessage</Name>
+			<BitSize>80</BitSize>
+			<SubItem>
+				<Name>CobId</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Data</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000002}">USINT</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>8</Elements>
+				</ArrayInfo>
+				<BitSize>64</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}" AutoDeleteType="true">ST_CanQueue</Name>
+			<BitSize>848</BitSize>
+			<SubItem>
+				<Name>TxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>NoOfRxMessages</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Messages</Name>
+				<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>10</Elements>
+				</ArrayInfo>
+				<Comment><![CDATA[ Message length should according to io device setting]]></Comment>
+				<BitSize>800</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
 			<Name GUID="{6F5942ED-BFA1-497D-8225-23C6DAAD0A09}" TcBaseType="true">ST_LibVersion</Name>
 			<BitSize>288</BitSize>
 			<SubItem>
@@ -291,7 +344,7 @@
 			</Hides>
 		</DataType>
 		<DataType>
-			<Name GUID="{CD0367B0-AC23-73F9-3788-7DA05B7C4D9E}" AutoDeleteType="true">_Implicit_KindOfTask</Name>
+			<Name GUID="{9C3C48F6-BE74-8792-558B-625FC8207360}" AutoDeleteType="true">_Implicit_KindOfTask</Name>
 			<BitSize>16</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
 			<EnumInfo>
@@ -312,10 +365,6 @@
 			</EnumInfo>
 			<Properties>
 				<Property>
-					<Name>signature_flag</Name>
-					<Value>256</Value>
-				</Property>
-				<Property>
 					<Name>hide</Name>
 				</Property>
 				<Property>
@@ -324,7 +373,7 @@
 			</Properties>
 		</DataType>
 		<DataType>
-			<Name GUID="{167A5CA8-1337-68A5-F81F-229672FD130B}" AutoDeleteType="true">_Implicit_Jitter_Distribution</Name>
+			<Name GUID="{796E10E9-EF79-FB21-D1CF-160868F01600}" AutoDeleteType="true">_Implicit_Jitter_Distribution</Name>
 			<BitSize>48</BitSize>
 			<SubItem>
 				<Name>wRangeMax</Name>
@@ -346,16 +395,12 @@
 			</SubItem>
 			<Properties>
 				<Property>
-					<Name>signature_flag</Name>
-					<Value>256</Value>
-				</Property>
-				<Property>
 					<Name>hide</Name>
 				</Property>
 			</Properties>
 		</DataType>
 		<DataType>
-			<Name GUID="{659FF1F2-DCC8-554A-FA96-44EFC9B5F395}" AutoDeleteType="true">_Implicit_Task_Info</Name>
+			<Name GUID="{64C8A2DA-23D2-02C2-2933-F7BBE091F9FA}" AutoDeleteType="true">_Implicit_Task_Info</Name>
 			<BitSize>896</BitSize>
 			<SubItem>
 				<Name>dwVersion</Name>
@@ -377,7 +422,7 @@
 			</SubItem>
 			<SubItem>
 				<Name>KindOf</Name>
-				<Type GUID="{CD0367B0-AC23-73F9-3788-7DA05B7C4D9E}">_Implicit_KindOfTask</Type>
+				<Type GUID="{9C3C48F6-BE74-8792-558B-625FC8207360}">_Implicit_KindOfTask</Type>
 				<BitSize>16</BitSize>
 				<BitOffs>144</BitOffs>
 			</SubItem>
@@ -491,7 +536,7 @@
 			</SubItem>
 			<SubItem>
 				<Name>pJitterDistribution</Name>
-				<Type GUID="{167A5CA8-1337-68A5-F81F-229672FD130B}" PointerTo="1">_Implicit_Jitter_Distribution</Type>
+				<Type GUID="{796E10E9-EF79-FB21-D1CF-160868F01600}" PointerTo="1">_Implicit_Jitter_Distribution</Type>
 				<BitSize>64</BitSize>
 				<BitOffs>768</BitOffs>
 			</SubItem>
@@ -527,16 +572,46 @@
 			</SubItem>
 			<Properties>
 				<Property>
-					<Name>signature_flag</Name>
-					<Value>256</Value>
-				</Property>
-				<Property>
 					<Name>hide</Name>
 				</Property>
 			</Properties>
 		</DataType>
+		<DataType>
+			<Name GUID="{A202C971-E1DE-631C-0BCC-0115ACDE79ED}" AutoDeleteType="true">CanInterface_Transporter</Name>
+			<BitSize>1792</BitSize>
+			<SubItem>
+				<Name>TxData</Name>
+				<Type GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</Type>
+				<BitSize>848</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcAddressType</Name>
+						<Value>Output</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>RxData</Name>
+				<Type GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</Type>
+				<BitSize>848</BitSize>
+				<BitOffs>912</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcAddressType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>PouType</Name>
+					<Value>FunctionBlock</Value>
+				</Property>
+			</Properties>
+		</DataType>
 	</DataTypes>
-	<Instance Id="#x08502000" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{F01F78DE-2B57-E6DB-025F-A72F16E985FC}">
+	<Instance Id="#x08502000" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{79D9CE6D-8A6A-D353-15A3-4EA2ED1A897D}">
 		<Name>__FILENAME__</Name>
 		<TmcDesc GUID="{EABECB65-8C61-4E22-88A2-C2FE6907D8E6}" TcSmClass="TComPlcObjDef">
 			<Name>Untitled1</Name>
@@ -554,12 +629,6 @@
 				</Context>
 			</Contexts>
 			<Parameters>
-				<Parameter ReadOnly="true">
-					<Name>DeviceLog Filter</Name>
-					<BitSize>32</BitSize>
-					<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-					<PTCID>#x08508045</PTCID>
-				</Parameter>
 				<Parameter ReadOnly="true">
 					<Name>Application Name</Name>
 					<BitSize>72</BitSize>
@@ -629,10 +698,46 @@
 			</Parameters>
 			<DataAreas>
 				<DataArea>
+					<AreaNo AreaType="InputDst" CreateSymbols="true">0</AreaNo>
+					<Name>PlcTask Inputs</Name>
+					<ContextId>0</ContextId>
+					<ByteSize>524288</ByteSize>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter.RxData</Name>
+						<BitSize>848</BitSize>
+						<BaseType GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</BaseType>
+						<Properties>
+							<Property>
+								<Name>TcAddressType</Name>
+								<Value>Input</Value>
+							</Property>
+						</Properties>
+						<BitOffs>3599440</BitOffs>
+					</Symbol>
+				</DataArea>
+				<DataArea>
+					<AreaNo AreaType="OutputSrc" CreateSymbols="true">1</AreaNo>
+					<Name>PlcTask Outputs</Name>
+					<ContextId>0</ContextId>
+					<ByteSize>524288</ByteSize>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter.TxData</Name>
+						<BitSize>848</BitSize>
+						<BaseType GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</BaseType>
+						<Properties>
+							<Property>
+								<Name>TcAddressType</Name>
+								<Value>Output</Value>
+							</Property>
+						</Properties>
+						<BitOffs>3598592</BitOffs>
+					</Symbol>
+				</DataArea>
+				<DataArea>
 					<AreaNo AreaType="Internal" CreateSymbols="true">3</AreaNo>
 					<Name>PlcTask Internal</Name>
 					<ContextId>0</ContextId>
-					<ByteSize>10616832</ByteSize>
+					<ByteSize>524288</ByteSize>
 					<Symbol>
 						<Name>Global_Version.stLibVersion_Tc2_Standard</Name>
 						<BitSize>288</BitSize>
@@ -754,46 +859,18 @@
 						<BitOffs>3072576</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>TwinCAT_PreventOnlineChangeGvl.WriteLineIDs</Name>
-						<BitSize>8</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
-						<Default>
-							<Bool>false</Bool>
-						</Default>
+						<Name>TwinCAT_SystemInfoVarList._TaskPouOid_PlcTask</Name>
+						<BitSize>32</BitSize>
+						<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
 						<Properties>
 							<Property>
 								<Name>TcVarGlobal</Name>
 							</Property>
-						</Properties>
-						<BitOffs>3096448</BitOffs>
-					</Symbol>
-					<Symbol>
-						<Name>TwinCAT_PreventOnlineChangeGvl.PlcProfilerActive</Name>
-						<BitSize>8</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
-						<Default>
-							<Bool>false</Bool>
-						</Default>
-						<Properties>
 							<Property>
-								<Name>TcVarGlobal</Name>
+								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3096456</BitOffs>
-					</Symbol>
-					<Symbol>
-						<Name>TwinCAT_PreventOnlineChangeGvl.PlcProfilerConfigChecksum</Name>
-						<BitSize>520</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000100000040}">STRING(64)</BaseType>
-						<Default>
-							<String><![CDATA[]]></String>
-						</Default>
-						<Properties>
-							<Property>
-								<Name>TcVarGlobal</Name>
-							</Property>
-						</Properties>
-						<BitOffs>3096464</BitOffs>
+						<BitOffs>3080352</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList._AppInfo</Name>
@@ -807,7 +884,7 @@
 								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3097344</BitOffs>
+						<BitOffs>3080384</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList._TaskInfo</Name>
@@ -825,21 +902,7 @@
 								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3099392</BitOffs>
-					</Symbol>
-					<Symbol>
-						<Name>TwinCAT_SystemInfoVarList._TaskPouOid_PlcTask</Name>
-						<BitSize>32</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-						<Properties>
-							<Property>
-								<Name>TcVarGlobal</Name>
-							</Property>
-							<Property>
-								<Name>no_init</Name>
-							</Property>
-						</Properties>
-						<BitOffs>3100416</BitOffs>
+						<BitOffs>3082432</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList._TaskOid_PlcTask</Name>
@@ -853,12 +916,12 @@
 								<Name>no_init</Name>
 							</Property>
 						</Properties>
-						<BitOffs>3100448</BitOffs>
+						<BitOffs>3083456</BitOffs>
 					</Symbol>
 					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList.__PlcTask</Name>
 						<BitSize>896</BitSize>
-						<BaseType GUID="{659FF1F2-DCC8-554A-FA96-44EFC9B5F395}">_Implicit_Task_Info</BaseType>
+						<BaseType GUID="{64C8A2DA-23D2-02C2-2933-F7BBE091F9FA}">_Implicit_Task_Info</BaseType>
 						<Default>
 							<SubItem>
 								<Name>.dwVersion</Name>
@@ -874,7 +937,13 @@
 								<Value>PlcTask</Value>
 							</Property>
 						</Properties>
-						<BitOffs>3100480</BitOffs>
+						<BitOffs>3083520</BitOffs>
+					</Symbol>
+					<Symbol>
+						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter</Name>
+						<BitSize>1792</BitSize>
+						<BaseType GUID="{A202C971-E1DE-631C-0BCC-0115ACDE79ED}">CanInterface_Transporter</BaseType>
+						<BitOffs>3598528</BitOffs>
 					</Symbol>
 				</DataArea>
 			</DataAreas>
@@ -885,27 +954,19 @@
 				</Property>
 				<Property>
 					<Name>ChangeDate</Name>
-					<Value>2026-03-14T17:43:23</Value>
+					<Value>2026-03-16T11:48:51</Value>
 				</Property>
 				<Property>
 					<Name>GeneratedCodeSize</Name>
-					<Value>40960</Value>
+					<Value>57344</Value>
 				</Property>
 				<Property>
 					<Name>GlobalDataSize</Name>
-					<Value>12288</Value>
-				</Property>
-				<Property>
-					<Name>UTF8EncodedStrings</Name>
-					<Value>false</Value>
+					<Value>16384</Value>
 				</Property>
 			</Properties>
 			<ParentOTCID>#x08500000</ParentOTCID>
 			<ParameterValues>
-				<Value>
-					<Name>DeviceLog Filter</Name>
-					<Value>0</Value>
-				</Value>
 				<Value>
 					<Name>Application Name</Name>
 					<String>Port_851</String>
@@ -924,7 +985,7 @@
 				</Value>
 				<Value>
 					<Name>Application Timestamp</Name>
-					<Value>1773510203</Value>
+					<Value>1773661731</Value>
 				</Value>
 				<Value>
 					<Name>Symbolic Mapping</Name>
@@ -948,7 +1009,7 @@
 				</Value>
 				<Value>
 					<Name>Task Module ADI Indices</Name>
-					<Value>4294967295</Value>
+					<Value>65536</Value>
 				</Value>
 			</ParameterValues>
 		</TmcDesc>
@@ -967,4 +1028,12 @@
 			<TaskPouOid Prio="20" OTCID="#x08502001"/>
 		</TaskPouOids>
 	</Instance>
+	<Mappings>
+		<OwnerA>
+			<OwnerB Name="TIID^Device 2 (EL6751)^ODrive (CAN Interface)">
+				<Link VarA="PlcTask Inputs^ODRIVE_SAMPLE._fbCanInterface_Transporter.RxData" VarB="Inputs^RxQueue"/>
+				<Link VarA="PlcTask Outputs^ODRIVE_SAMPLE._fbCanInterface_Transporter.TxData" VarB="Outputs^TxQueue"/>
+			</OwnerB>
+		</OwnerA>
+	</Mappings>
 </TcSmItem>

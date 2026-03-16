@@ -11,9 +11,10 @@
 		<Image Id="3" AddrType="4" ImageType="3">
 			<Name>Image</Name>
 		</Image>
+		<Box File="ODrive (CAN Interface).xti" Id="15"/>
 		<CanOpen>
 			<Fcxxxx>
-				<DevSettings BusyIntEnabled="true" DisableSlots="true" NetId="058f7fe40301" CycleDivider="1"/>
+				<DevSettings BusyIntEnabled="true" DisableSlots="true" NetId="058f7fe40301" FifoSize="5" CycleDivider="1"/>
 				<DevParameter CycleTime="20000" WatchDog="100" InputShift="60"/>
 				<EquiParameter RelationShiftCycle="0"/>
 			</Fcxxxx>

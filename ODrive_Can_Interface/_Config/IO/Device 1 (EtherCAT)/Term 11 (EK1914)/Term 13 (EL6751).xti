@@ -2,12 +2,119 @@
 <TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.59" ClassName="CFlbDeviceTermDef" SubType="9094">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000007}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..6] OF BIT</Name>
-			<BitSize>7</BitSize>
+			<Name GUID="{AC4BB20D-5D03-4CE5-96C6-86DFFE816AA7}" Namespace="IO" TcBaseType="true">CANMESSAGE</Name>
+			<BitSize>64</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>8</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{7F739CFE-0C6E-41C8-A538-49DBEB5A9A25}" Namespace="IO" TcBaseType="true">CANQUEUE</Name>
+			<BitSize>80</BitSize>
+			<SubItem>
+				<Name>cobId</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>data</Name>
+				<Type GUID="{AC4BB20D-5D03-4CE5-96C6-86DFFE816AA7}" Namespace="IO">CANMESSAGE</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{1ED92406-405E-2A7C-FD38-C7BF0026B8FD}" Namespace="IO">CANRXQUEUESTRUCT_N_10</Name>
+			<BitSize>848</BitSize>
+			<SubItem>
+				<Name>TxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>NoOfRxMessages</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxMessages</Name>
+				<Type GUID="{7F739CFE-0C6E-41C8-A538-49DBEB5A9A25}" Namespace="IO">CANQUEUE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>10</Elements>
+				</ArrayInfo>
+				<BitSize>800</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-0020000000F0}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..29] OF BYTE</Name>
+			<BitSize>240</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>30</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000080}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..15] OF BYTE</Name>
+			<BitSize>128</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>16</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{DF5CE5F4-8173-4C0F-0FA7-11F4C21AEB51}" Namespace="IO">CANTXQUEUESTRUCT_N_10</Name>
+			<BitSize>848</BitSize>
+			<SubItem>
+				<Name>TxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>NoOfTxMessages</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TxMessages</Name>
+				<Type GUID="{7F739CFE-0C6E-41C8-A538-49DBEB5A9A25}" Namespace="IO">CANQUEUE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>10</Elements>
+				</ArrayInfo>
+				<BitSize>800</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000006}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..5] OF BIT</Name>
+			<BitSize>6</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
 				<LBound>0</LBound>
-				<Elements>7</Elements>
+				<Elements>6</Elements>
 			</ArrayInfo>
 		</DataType>
 	</DataTypes>
@@ -20,16 +127,48 @@
 		<EtherCAT SlaveType="5" AdsServerAddress="058f7fe403010000" FixedAdsServerNetId="true" PdiType="#x0408" ExecIo="true" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="35" FoeType="1" VendorId="#x00000002" ProductCode="#x1a5f3052" RevisionNo="#x00160000" InfoDataAddr="true" InfoDataNetId="true" OwnAddrExtern="true" TimeoutStateChange1="5000" TimeoutStateChange3="10000" TimeoutStateChange4="1000" TimeoutMailbox2="2000" GenerateOwnNetId="true" InitializeOwnNetId="true" PortPhys="51" MaxSlotCount="126" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL6751 CANopen Master" Desc="EL6751">
 			<SyncMan>001000042600010001000000500000040004001026010000</SyncMan>
 			<SyncMan>001400042200010002000000500000040004001422010000</SyncMan>
-			<SyncMan>001800002600000003000000000000000000001826010000</SyncMan>
-			<SyncMan>002406002200010004000000000000000000002422010000</SyncMan>
-			<Fmmu>0000000000000000000000020000000001000000000000000000000000000000</Fmmu>
+			<SyncMan>00186a002600010003000000000000000000001826010000</SyncMan>
+			<SyncMan>002471002200010004000000000000000000002422010000</SyncMan>
+			<Fmmu>0000000000000000001800020100000001000000000000000000000000000000</Fmmu>
 			<Fmmu>0000000000000000002400010100000002000000000000000000000000000000</Fmmu>
 			<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
 			<BootStrapData>0010140200181402</BootStrapData>
 			<SuName>Term 13 (EL6751)</SuName>
 			<DcMode>53796e6368726f6e0000000000000000534d2d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</DcMode>
 			<DcMode>444353594e430000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000090d00300000000070100000000000000000000000000000000000000000000000000000000000000</DcMode>
+			<Pdo Name="Box 15 (CAN Interface)_IN" Index="#x1a00" Flags="#x0011" SyncMan="3">
+				<Entry Name="RxQueue" Index="#xfc10" Sub="#x01" Flags="#x00000100">
+					<Type GUID="{1ED92406-405E-2A7C-FD38-C7BF0026B8FD}" Namespace="IO">CANRXQUEUESTRUCT_N_10</Type>
+				</Entry>
+				<Entry Flags="#x00000100">
+					<Type GUID="{18071995-0000-0000-0000-0020000000F0}">ARRAY [0..29] OF BYTE</Type>
+				</Entry>
+				<Entry Flags="#x00000100">
+					<Type GUID="{18071995-0000-0000-0000-0020000000F0}">ARRAY [0..29] OF BYTE</Type>
+				</Entry>
+				<Entry Flags="#x00000100">
+					<Type GUID="{18071995-0000-0000-0000-002000000080}">ARRAY [0..15] OF BYTE</Type>
+				</Entry>
+			</Pdo>
+			<Pdo Name="Box 15 (CAN Interface)_OUT" Index="#x1600" InOut="1" Flags="#x0011" SyncMan="2">
+				<Entry Name="TxQueue" Index="#xfc11" Sub="#x01" Flags="#x00000100">
+					<Type GUID="{DF5CE5F4-8173-4C0F-0FA7-11F4C21AEB51}" Namespace="IO">CANTXQUEUESTRUCT_N_10</Type>
+				</Entry>
+				<Entry Flags="#x00000100">
+					<Type GUID="{18071995-0000-0000-0000-0020000000F0}">ARRAY [0..29] OF BYTE</Type>
+				</Entry>
+				<Entry Flags="#x00000100">
+					<Type GUID="{18071995-0000-0000-0000-0020000000F0}">ARRAY [0..29] OF BYTE</Type>
+				</Entry>
+				<Entry Flags="#x00000100">
+					<Type GUID="{18071995-0000-0000-0000-002000000080}">ARRAY [0..15] OF BYTE</Type>
+				</Entry>
+			</Pdo>
 			<Pdo Name="Device 2 (EL6751)" Index="#x1a80" Flags="#x0011" SyncMan="3">
+				<Entry Name="Box 15 (CAN Interface)_NodeState" Index="#xa000" Sub="#x01" Flags="#x00000100">
+					<DefaultDataMask>1f1f</DefaultDataMask>
+					<Type>USINT</Type>
+				</Entry>
 				<Entry Name="Device 2 (EL6751)_Error" Index="#xf100" Sub="#x01" Flags="#x00000100">
 					<Type>USINT</Type>
 				</Entry>
@@ -45,8 +184,11 @@
 				<Entry Name="Device 2 (EL6751)_DiagFlag" Index="#xf100" Sub="#x02" Flags="#x00000100">
 					<Type>BIT</Type>
 				</Entry>
+				<Entry Name="Box 15 (CAN Interface)_DiagFlag" Index="#xa000" Sub="#x02" Flags="#x00000100">
+					<Type>BIT</Type>
+				</Entry>
 				<Entry>
-					<Type GUID="{18071995-0000-0000-0000-002000000007}">ARRAY [0..6] OF BIT</Type>
+					<Type GUID="{18071995-0000-0000-0000-002000000006}">ARRAY [0..5] OF BIT</Type>
 				</Entry>
 			</Pdo>
 			<CoeProfile ProfileNo="5001"/>

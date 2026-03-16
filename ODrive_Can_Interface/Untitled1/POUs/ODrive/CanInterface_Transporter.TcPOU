@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="CanInterface_Transporter" Id="{c60a47cd-3a50-4e37-b37f-89c661c67906}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK CanInterface_Transporter
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	TxData AT%Q* : ST_CanQueue;
+	RxData AT%I* : ST_CanQueue;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="CanInterface_Transporter">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

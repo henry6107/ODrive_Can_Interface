@@ -5,7 +5,7 @@
     <CycleTime>10000</CycleTime>
     <Priority>20</Priority>
     <PouCall>
-      <Name>MAIN</Name>
+      <Name>ODRIVE_SAMPLE</Name>
     </PouCall>
     <TaskFBGuid>{8ee216d5-6768-4f4a-b704-bc20601aa591}</TaskFBGuid>
     <Fb_init>{0a83aeb5-406b-4b29-9f0e-eed23ddfa7ca}</Fb_init>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="ODRIVE_SAMPLE" Id="{38a10a06-a8a5-4a8f-92f3-d56125e5d3b4}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM ODRIVE_SAMPLE
+VAR
+	_fbCanInterface_Transporter : CanInterface_Transporter;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="ODRIVE_SAMPLE">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

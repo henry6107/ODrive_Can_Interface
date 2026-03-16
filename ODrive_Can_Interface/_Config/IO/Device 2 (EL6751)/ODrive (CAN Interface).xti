@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.59" ClassName="CCanQueueDef" SubType="5051">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{AC4BB20D-5D03-4CE5-96C6-86DFFE816AA7}" Namespace="IO" TcBaseType="true">CANMESSAGE</Name>
+			<BitSize>64</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>8</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{7F739CFE-0C6E-41C8-A538-49DBEB5A9A25}" Namespace="IO" TcBaseType="true">CANQUEUE</Name>
+			<BitSize>80</BitSize>
+			<SubItem>
+				<Name>cobId</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>data</Name>
+				<Type GUID="{AC4BB20D-5D03-4CE5-96C6-86DFFE816AA7}" Namespace="IO">CANMESSAGE</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{1ED92406-405E-2A7C-FD38-C7BF0026B8FD}" Namespace="IO">CANRXQUEUESTRUCT_N_10</Name>
+			<BitSize>848</BitSize>
+			<SubItem>
+				<Name>TxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>NoOfRxMessages</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxMessages</Name>
+				<Type GUID="{7F739CFE-0C6E-41C8-A538-49DBEB5A9A25}" Namespace="IO">CANQUEUE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>10</Elements>
+				</ArrayInfo>
+				<BitSize>800</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{DF5CE5F4-8173-4C0F-0FA7-11F4C21AEB51}" Namespace="IO">CANTXQUEUESTRUCT_N_10</Name>
+			<BitSize>848</BitSize>
+			<SubItem>
+				<Name>TxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RxCounter</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>NoOfTxMessages</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TxMessages</Name>
+				<Type GUID="{7F739CFE-0C6E-41C8-A538-49DBEB5A9A25}" Namespace="IO">CANQUEUE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>10</Elements>
+				</ArrayInfo>
+				<BitSize>800</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+		</DataType>
+	</DataTypes>
+	<Box Id="15" BoxType="5051">
+		<Name>__FILENAME__</Name>
+		<ImageId>3</ImageId>
+		<Vars VarGrpType="1">
+			<Name>Inputs</Name>
+			<Var>
+				<Name>RxQueue</Name>
+				<Type GUID="{1ED92406-405E-2A7C-FD38-C7BF0026B8FD}" Namespace="IO">CANRXQUEUESTRUCT_N_10</Type>
+			</Var>
+			<Var BoxStateVariable="true">
+				<Name>NodeState</Name>
+				<Comment><![CDATA[Master- and Slave-Mode:
+   0 = No error
+
+Master-Mode:
+   1 = Node deactivated
+   2 = Node not found
+   4 = SDO syntax error at StartUp
+   5 = SDO data mismatch at StartUp
+   8 = Node StartUp in progress
+  11 = CAN-Controller is Bus-OFF
+  12 = Pre-Operational
+  13 = Server bus fault
+  14 = Guarding: toggle error
+  20 = TxPDO too short
+  22 = Expected TxPDO is missing
+  23 = Node is Operational but not all TxPDOs were received
+  31 = only for EtherCAT gateways: WC-State of cyclic EtherCAT frame is 1
+  +64 = startup of slave is finished 
+
+Slave-Mode:
+ 128 = Node is Operational but not all RxPDOs were received
+ 129 = Node is Pre-Operational
+ 130 = Node is Stopped
+]]></Comment>
+				<Type>USINT</Type>
+				<BitOffs>848</BitOffs>
+			</Var>
+			<Var BoxStateVariable="true">
+				<Name>DiagFlag</Name>
+				<Comment><![CDATA[0 = Diagnosis Data unchanged
+1 = Diagnosis Data changed, use ADS-Read to get the data]]></Comment>
+				<Type>BIT</Type>
+				<BitOffs>897</BitOffs>
+			</Var>
+		</Vars>
+		<Vars VarGrpType="2">
+			<Name>Outputs</Name>
+			<Var>
+				<Name>TxQueue</Name>
+				<Type GUID="{DF5CE5F4-8173-4C0F-0FA7-11F4C21AEB51}" Namespace="IO">CANTXQUEUESTRUCT_N_10</Type>
+			</Var>
+		</Vars>
+		<CanOpen>
+			<CanQueue TxQueue="10" RxQueue="10">
+				<RxFilter EndCobId="2047"/>
+			</CanQueue>
+		</CanOpen>
+	</Box>
+</TcSmItem>
