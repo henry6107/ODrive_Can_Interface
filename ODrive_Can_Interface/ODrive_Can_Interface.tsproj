@@ -8,8 +8,19 @@
 				</Task>
 			</Tasks>
 		</System>
+		<Motion>
+			<NC File="NC.xti"/>
+		</Motion>
 		<Plc>
 			<Project File="Untitled1.xti"/>
 		</Plc>
+		<Io>
+			<Device File="Device 1 (EtherCAT).xti" Id="1"/>
+			<Device File="Device 2 (EL6751).xti" Id="2"/>
+		</Io>
 	</Project>
+	<Mappings>
+		<MappingInfo Identifier="{00000000-0010-0304-4000-040310000403}" Id="#x02030010"/>
+		<MappingInfo Identifier="{00000000-0020-0304-4000-040321000403}" Id="#x02030020"/>
+	</Mappings>
 </TcSmProject>
