@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_OdriveControlMode" Id="{359d4e0e-21e9-4560-8ed9-483f3e9ca3da}">
+    <Declaration><![CDATA[TYPE E_OdriveControlMode :
+(
+    Torque := 1,
+    Velocity := 2,
+    Position := 3
+) UDINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

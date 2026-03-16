@@ -49,7 +49,7 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}" AutoDeleteType="true">ST_CanQueue</Name>
+			<Name GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}" AutoDeleteType="true">ST_CanQueue</Name>
 			<BitSize>848</BitSize>
 			<SubItem>
 				<Name>TxCounter</Name>
@@ -64,7 +64,7 @@
 				<BitOffs>16</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>NoOfRxMessages</Name>
+				<Name>NoOfMessages</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
 				<BitSize>16</BitSize>
 				<BitOffs>32</BitOffs>
@@ -577,11 +577,64 @@
 			</Properties>
 		</DataType>
 		<DataType>
-			<Name GUID="{F4B2BC05-A23F-3CF9-1E34-DECB4747570E}" AutoDeleteType="true">CanInterface_Transporter</Name>
-			<BitSize>1792</BitSize>
+			<Name GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard" AutoDeleteType="true">R_TRIG</Name>
+			<Comment><![CDATA[
+	Rising Edge detection.
+]]></Comment>
+			<BitSize>128</BitSize>
 			<SubItem>
-				<Name>TxData</Name>
-				<Type GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</Type>
+				<Name>CLK</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ Signal to detect ]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Input</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>Q</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<Comment><![CDATA[ rising edge at signal detected ]]></Comment>
+				<BitSize>8</BitSize>
+				<BitOffs>72</BitOffs>
+				<Properties>
+					<Property>
+						<Name>ItemType</Name>
+						<Value>Output</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>M</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>80</BitOffs>
+				<Properties>
+					<Property>
+						<Name>conditionalshow</Name>
+					</Property>
+				</Properties>
+			</SubItem>
+			<Properties>
+				<Property>
+					<Name>PouType</Name>
+					<Value>FunctionBlock</Value>
+				</Property>
+				<Property>
+					<Name>conditionalshow_all_locals</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{47FD114A-CF53-D598-7736-3C6CA42B5347}" AutoDeleteType="true">CanInterface_Transporter</Name>
+			<BitSize>1920</BitSize>
+			<SubItem>
+				<Name>_TxData</Name>
+				<Type GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</Type>
 				<BitSize>848</BitSize>
 				<BitOffs>64</BitOffs>
 				<Properties>
@@ -592,8 +645,8 @@
 				</Properties>
 			</SubItem>
 			<SubItem>
-				<Name>RxData</Name>
-				<Type GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</Type>
+				<Name>_RxData</Name>
+				<Type GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</Type>
 				<BitSize>848</BitSize>
 				<BitOffs>912</BitOffs>
 				<Properties>
@@ -603,29 +656,36 @@
 					</Property>
 				</Properties>
 			</SubItem>
+			<SubItem>
+				<Name>__CANINTERFACE_TRANSPORTER__SENDCMD__NSTEP</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>1760</BitOffs>
+				<Default>
+					<Value>0</Value>
+				</Default>
+			</SubItem>
+			<SubItem>
+				<Name>__CANINTERFACE_TRANSPORTER__SENDCMD__RTRIG</Name>
+				<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+				<BitSize>128</BitSize>
+				<BitOffs>1792</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name Static="true">_nMaxMsgCount</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<Default>
+					<Value>10</Value>
+				</Default>
+			</SubItem>
 			<Method>
 				<Name>SendCmd</Name>
-				<ReturnType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</ReturnType>
-				<ReturnBitSize>8</ReturnBitSize>
-				<Local>
-					<Name>nState</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Properties>
-					<Property>
-						<Name>generate_implicit_init_function</Name>
-					</Property>
-				</Properties>
-			</Method>
-			<Method>
-				<Name>AddCmd</Name>
-				<ReturnType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</ReturnType>
-				<ReturnBitSize>8</ReturnBitSize>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
 				<Parameter>
-					<Name>stCanMsg</Name>
-					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
-					<BitSize>80</BitSize>
+					<Name>bExecute</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
 				</Parameter>
 				<Parameter>
 					<Name>bBusy</Name>
@@ -639,7 +699,51 @@
 					</Properties>
 				</Parameter>
 				<Parameter>
+					<Name>bDone</Name>
+					<Comment><![CDATA[bError : BOOL;]]></Comment>
+					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+					<BitSize>8</BitSize>
+					<Properties>
+						<Property>
+							<Name>ItemType</Name>
+							<Value>Output</Value>
+						</Property>
+					</Properties>
+				</Parameter>
+				<Local>
+					<Name>nStep</Name>
+					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+					<BitSize>16</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__CANINTERFACE_TRANSPORTER__SENDCMD__NSTEP</Value>
+						</Property>
+					</Properties>
+				</Local>
+				<Local>
+					<Name>rTrig</Name>
+					<Type GUID="{61E1D0F9-17CD-6F72-1F2E-739132BB9C5B}" Namespace="Tc2_Standard">R_TRIG</Type>
+					<BitSize>128</BitSize>
+					<Properties>
+						<Property>
+							<Name>uselocation</Name>
+							<Value>__CANINTERFACE_TRANSPORTER__SENDCMD__RTRIG</Value>
+						</Property>
+					</Properties>
+				</Local>
+			</Method>
+			<Method>
+				<Name>AddCmd</Name>
+				<ReturnBitSize X64="64">32</ReturnBitSize>
+				<Parameter>
+					<Name>stCanMsg</Name>
+					<Type GUID="{1F2CBB37-84D9-C3B2-D04B-CFFB236049D8}">ST_CanMessage</Type>
+					<BitSize>80</BitSize>
+				</Parameter>
+				<Parameter>
 					<Name>bError</Name>
+					<Comment><![CDATA[bBusy : BOOL;]]></Comment>
 					<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 					<BitSize>8</BitSize>
 					<Properties>
@@ -650,9 +754,9 @@
 					</Properties>
 				</Parameter>
 				<Parameter>
-					<Name>nErrorId</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
-					<BitSize>32</BitSize>
+					<Name>sErrorMsg</Name>
+					<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+					<BitSize>648</BitSize>
 					<Properties>
 						<Property>
 							<Name>ItemType</Name>
@@ -671,36 +775,19 @@
 						</Property>
 					</Properties>
 				</Parameter>
-				<Local>
-					<Name>nMsgCount</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nStep</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Local>
-					<Name>nMaxMsgCount</Name>
-					<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
-					<BitSize>16</BitSize>
-				</Local>
-				<Properties>
-					<Property>
-						<Name>generate_implicit_init_function</Name>
-					</Property>
-				</Properties>
 			</Method>
 			<Properties>
 				<Property>
 					<Name>PouType</Name>
 					<Value>FunctionBlock</Value>
 				</Property>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
 			</Properties>
 		</DataType>
 	</DataTypes>
-	<Instance Id="#x08502000" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{C84ACD0C-D149-79B6-C92F-C99943757699}">
+	<Instance Id="#x08502000" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{7A5484F5-B8A5-3279-8A9A-6AD97F936A7F}">
 		<Name>__FILENAME__</Name>
 		<TmcDesc GUID="{EABECB65-8C61-4E22-88A2-C2FE6907D8E6}" TcSmClass="TComPlcObjDef">
 			<Name>Untitled1</Name>
@@ -784,6 +871,12 @@
 					<BaseType GUID="{18071995-0000-0000-0000-000400000002}">ARRAY [0..1] OF WORD</BaseType>
 					<PTCID>#x0850801c</PTCID>
 				</Parameter>
+				<Parameter ReadOnly="true">
+					<Name>Mapping OIDs</Name>
+					<BitSize>32</BitSize>
+					<BaseType GUID="{18071995-0000-0000-0000-000700000001}">ARRAY [0..0] OF OTCID</BaseType>
+					<PTCID>#x08500006</PTCID>
+				</Parameter>
 			</Parameters>
 			<DataAreas>
 				<DataArea>
@@ -792,16 +885,16 @@
 					<ContextId>0</ContextId>
 					<ByteSize>524288</ByteSize>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter.RxData</Name>
+						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter._RxData</Name>
 						<BitSize>848</BitSize>
-						<BaseType GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</BaseType>
+						<BaseType GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</BaseType>
 						<Properties>
 							<Property>
 								<Name>TcAddressType</Name>
 								<Value>Input</Value>
 							</Property>
 						</Properties>
-						<BitOffs>3599632</BitOffs>
+						<BitOffs>3599888</BitOffs>
 					</Symbol>
 				</DataArea>
 				<DataArea>
@@ -810,16 +903,16 @@
 					<ContextId>0</ContextId>
 					<ByteSize>524288</ByteSize>
 					<Symbol>
-						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter.TxData</Name>
+						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter._TxData</Name>
 						<BitSize>848</BitSize>
-						<BaseType GUID="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}">ST_CanQueue</BaseType>
+						<BaseType GUID="{79A8A7FF-7629-6743-4D06-6ABD26051F38}">ST_CanQueue</BaseType>
 						<Properties>
 							<Property>
 								<Name>TcAddressType</Name>
 								<Value>Output</Value>
 							</Property>
 						</Properties>
-						<BitOffs>3598784</BitOffs>
+						<BitOffs>3599040</BitOffs>
 					</Symbol>
 				</DataArea>
 				<DataArea>
@@ -948,9 +1041,12 @@
 						<BitOffs>3072576</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>CanInterface_Transporter.SendCmd.nState</Name>
+						<Name>CanInterface_Transporter._nMaxMsgCount</Name>
 						<BitSize>16</BitSize>
 						<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+						<Default>
+							<Value>10</Value>
+						</Default>
 						<Properties>
 							<Property>
 								<Name>TcVarStatic</Name>
@@ -1019,28 +1115,6 @@
 						<BitOffs>3083456</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>CanInterface_Transporter.AddCmd.nMsgCount</Name>
-						<BitSize>16</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-						<Properties>
-							<Property>
-								<Name>TcVarStatic</Name>
-							</Property>
-						</Properties>
-						<BitOffs>3083488</BitOffs>
-					</Symbol>
-					<Symbol>
-						<Name>CanInterface_Transporter.AddCmd.nStep</Name>
-						<BitSize>16</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-						<Properties>
-							<Property>
-								<Name>TcVarStatic</Name>
-							</Property>
-						</Properties>
-						<BitOffs>3083504</BitOffs>
-					</Symbol>
-					<Symbol>
 						<Name>TwinCAT_SystemInfoVarList.__PlcTask</Name>
 						<BitSize>896</BitSize>
 						<BaseType GUID="{64C8A2DA-23D2-02C2-2933-F7BBE091F9FA}">_Implicit_Task_Info</BaseType>
@@ -1062,24 +1136,10 @@
 						<BitOffs>3083520</BitOffs>
 					</Symbol>
 					<Symbol>
-						<Name>CanInterface_Transporter.AddCmd.nMaxMsgCount</Name>
-						<BitSize>16</BitSize>
-						<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-						<Default>
-							<Value>10</Value>
-						</Default>
-						<Properties>
-							<Property>
-								<Name>TcVarStatic</Name>
-							</Property>
-						</Properties>
-						<BitOffs>3598656</BitOffs>
-					</Symbol>
-					<Symbol>
 						<Name>ODRIVE_SAMPLE._fbCanInterface_Transporter</Name>
-						<BitSize>1792</BitSize>
-						<BaseType GUID="{F4B2BC05-A23F-3CF9-1E34-DECB4747570E}">CanInterface_Transporter</BaseType>
-						<BitOffs>3598720</BitOffs>
+						<BitSize>1920</BitSize>
+						<BaseType GUID="{47FD114A-CF53-D598-7736-3C6CA42B5347}">CanInterface_Transporter</BaseType>
+						<BitOffs>3598976</BitOffs>
 					</Symbol>
 				</DataArea>
 			</DataAreas>
@@ -1090,7 +1150,7 @@
 				</Property>
 				<Property>
 					<Name>ChangeDate</Name>
-					<Value>2026-03-16T12:04:04</Value>
+					<Value>2026-03-16T13:14:11</Value>
 				</Property>
 				<Property>
 					<Name>GeneratedCodeSize</Name>
@@ -1121,7 +1181,7 @@
 				</Value>
 				<Value>
 					<Name>Application Timestamp</Name>
-					<Value>1773662644</Value>
+					<Value>1773666851</Value>
 				</Value>
 				<Value>
 					<Name>Symbolic Mapping</Name>
@@ -1147,8 +1207,24 @@
 					<Name>Task Module ADI Indices</Name>
 					<Value>65536</Value>
 				</Value>
+				<Value>
+					<Name>Mapping OIDs</Name>
+					<Value>33751072</Value>
+				</Value>
 			</ParameterValues>
 		</TmcDesc>
+		<UnrestoredVarLinks ImportTime="2026-03-16T12:20:25">
+			<OwnerA Name="InputDst" Prefix="TIPC^Untitled1^Untitled1 Instance" Type="1">
+				<OwnerB Name="TIID^Device 2 (EL6751)^ODrive (CAN Interface)">
+					<Link VarA="ODRIVE_SAMPLE._fbCanInterface_Transporter.RxData" TypeA="ST_CanQueue" InOutA="0" GuidA="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}" VarB="Inputs^RxQueue" RestoreInfo="ANotFound"/>
+				</OwnerB>
+			</OwnerA>
+			<OwnerA Name="OutputSrc" Prefix="TIPC^Untitled1^Untitled1 Instance" Type="2">
+				<OwnerB Name="TIID^Device 2 (EL6751)^ODrive (CAN Interface)">
+					<Link VarA="ODRIVE_SAMPLE._fbCanInterface_Transporter.TxData" TypeA="ST_CanQueue" InOutA="1" GuidA="{D51B06F2-8835-DFB9-FBAB-5EB29E4FC0C7}" VarB="Outputs^TxQueue" RestoreInfo="ANotFound"/>
+				</OwnerB>
+			</OwnerA>
+		</UnrestoredVarLinks>
 		<Contexts>
 			<Context>
 				<Id>0</Id>
@@ -1167,8 +1243,8 @@
 	<Mappings>
 		<OwnerA>
 			<OwnerB Name="TIID^Device 2 (EL6751)^ODrive (CAN Interface)">
-				<Link VarA="PlcTask Inputs^ODRIVE_SAMPLE._fbCanInterface_Transporter.RxData" VarB="Inputs^RxQueue"/>
-				<Link VarA="PlcTask Outputs^ODRIVE_SAMPLE._fbCanInterface_Transporter.TxData" VarB="Outputs^TxQueue"/>
+				<Link VarA="PlcTask Inputs^ODRIVE_SAMPLE._fbCanInterface_Transporter._RxData" VarB="Inputs^RxQueue"/>
+				<Link VarA="PlcTask Outputs^ODRIVE_SAMPLE._fbCanInterface_Transporter._TxData" VarB="Outputs^TxQueue"/>
 			</OwnerB>
 		</OwnerA>
 	</Mappings>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_OdriveAxisState" Id="{E5AA15B2-4825-4A29-B9E4-75C117932D7D}">
+    <Declaration><![CDATA[TYPE E_OdriveAxisState :
+(
+    Unknown := 0,
+    Idle := 1,
+    ClosedLoopControl := 8
+) UDINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

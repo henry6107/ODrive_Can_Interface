@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="U_OdriveDwordBytes" Id="{22FE0B43-EC16-452D-A3A8-EA2DD30F0B1E}">
+    <Declaration><![CDATA[TYPE U_OdriveDwordBytes :
+UNION
+    Value : DWORD;
+    Bytes : ARRAY[0..3] OF BYTE;
+END_UNION
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

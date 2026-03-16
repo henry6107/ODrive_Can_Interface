@@ -24,6 +24,34 @@
     <Compile Include="DUTs\DUTs\CAN_Interface\ST_CanQueue.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveAxisState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveCmd.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveControlMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveInputMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveDwordBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveIntBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveRealBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\U_OdriveUintBytes.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GVLs\GVL_ODrive.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -38,6 +66,7 @@
     <Folder Include="DUTs" />
     <Folder Include="DUTs\DUTs" />
     <Folder Include="DUTs\DUTs\CAN_Interface" />
+    <Folder Include="DUTs\DUTs\ODrive" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\ODrive" />
     <Folder Include="VISUs" />

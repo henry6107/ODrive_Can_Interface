@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="U_OdriveRealBytes" Id="{FBD9E32E-F860-42B3-92F5-A5C692D02503}">
+    <Declaration><![CDATA[TYPE U_OdriveRealBytes :
+UNION
+    Value : REAL;
+    Bytes : ARRAY[0..3] OF BYTE;
+END_UNION
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
