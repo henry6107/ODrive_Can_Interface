@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_CanInterfaceTransport" Id="{351058ca-049c-4ca2-9f12-3a906533c947}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CanInterfaceTransport
+
+VAR_INPUT
+    bEnable      : BOOL;
+END_VAR
+
+VAR_OUTPUT
+    xReady       : BOOL;
+    xError       : BOOL;
+    sErrorText   : STRING(80);
+END_VAR
+
+VAR
+	TxCanQueue AT%Q* : ST_CanQueue;
+	RxCanQueue AT%I* : ST_CanQueue;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

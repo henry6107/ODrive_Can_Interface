@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_CanQueue" Id="{75b2d68c-ca7f-46e4-a091-39a52f8b73b3}">
+    <Declaration><![CDATA[TYPE ST_CanQueue :
+STRUCT
+	TxCounter : UINT;
+	RxCounter : UINT;
+	NoOfRxMessages : UINT;
+	Messages : ARRAY[0..9] OF ST_CanMessage;	// Message length should according to io device setting
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

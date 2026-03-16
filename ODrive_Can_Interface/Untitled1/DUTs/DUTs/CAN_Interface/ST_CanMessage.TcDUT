@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ST_CanMessage" Id="{88332b27-8bb5-43e7-9c2d-f9243a1590c8}">
+    <Declaration><![CDATA[TYPE ST_CanMessage :
+STRUCT
+	CobId : UINT;
+	Data : ARRAY[0..7] OF USINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
