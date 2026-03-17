@@ -383,3 +383,12 @@ Tx message queue is fulled !
 底層 CAN Queue 傳輸功能塊位於：
 
 - `ODrive_Can_Interface/Untitled1/POUs/ODrive/ODriveCanSimpleTransporter.TcPOU`
+
+## 參考資料
+
+- ODrive CAN Protocol Overview
+  - https://docs.odriverobotics.com/v/latest/manual/can-protocol.html#overview
+- Beckhoff CAN Interface 文件總覽
+  - https://infosys.beckhoff.com/content/1033/can-interface/index.html?id=3488687489320045389
+- Beckhoff EL6751 CAN queue / communication 說明
+  - https://infosys.beckhoff.com/content/1033/el6751/2519175947.html?id=5544932967770383589
