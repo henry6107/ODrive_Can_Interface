@@ -6,7 +6,7 @@ STRUCT
 	TxCounter : UINT;
 	RxCounter : UINT;
 	NoOfMessages : UINT;
-	Messages : ARRAY[0..9] OF ST_CanMessage;	// Message length should according to io device setting
+	Messages : ARRAY[0..(GVL_ODrive.nMaxMsgCount-1)] OF ST_CanMessage;	// Message length should according to io device setting
 END_STRUCT
 END_TYPE
 ]]></Declaration>
