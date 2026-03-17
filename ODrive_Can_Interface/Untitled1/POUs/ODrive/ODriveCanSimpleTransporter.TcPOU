@@ -56,6 +56,24 @@ bDone := TRUE;
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="GetRxCounter" Id="{6c8af46b-18b4-41e4-8b9a-10f6f1190279}">
+      <Declaration><![CDATA[METHOD GetRxCounter : UINT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetRxCounter := _RxData.RxCounter;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IsTxDone" Id="{48e53a82-6dc5-450b-b413-936a420ec00f}">
+      <Declaration><![CDATA[METHOD IsTxDone : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsTxDone := (_TxData.TxCounter = _RxData.TxCounter) AND (_TxData.NoOfMessages = 0);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ReceiveData" Id="{f35617c3-1c7f-48a8-974c-4567958d847e}">
       <Declaration><![CDATA[METHOD ReceiveData
 VAR_INPUT
@@ -102,24 +120,6 @@ FOR nIdx := TO_DINT(nMsgCount) - 1 TO 0 BY -1 DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="GetRxCounter" Id="{6c8af46b-18b4-41e4-8b9a-10f6f1190279}">
-      <Declaration><![CDATA[METHOD GetRxCounter : UINT
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[GetRxCounter := _RxData.RxCounter;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="IsTxDone" Id="{48e53a82-6dc5-450b-b413-936a420ec00f}">
-      <Declaration><![CDATA[METHOD IsTxDone : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IsTxDone := (_TxData.TxCounter = _RxData.TxCounter) AND (_TxData.NoOfMessages = 0);]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="SendCmd" Id="{114bb877-3e08-4fb7-a3e9-5688e34c6d83}">
       <Declaration><![CDATA[METHOD PRIVATE SendCmd
 VAR_INPUT
@@ -132,26 +132,26 @@ VAR_OUTPUT
 END_VAR
 
 VAR_INST
-    nStep : UINT := 0;
+    _nStep : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE nStep OF
+        <ST><![CDATA[CASE _nStep OF
 	0: // Idle
 		IF bExecute THEN
 			bBusy := TRUE;
-			nStep := 1;
+			_nStep := 1;
 		END_IF
 		
 	1: // Send command
 		_TxData.TxCounter := _TxData.TxCounter + 1;
 		bBusy := TRUE;
-		nStep := 2;
+		_nStep := 2;
 	
 	2: // Check command sent
 		IF _TxData.TxCounter = _RxData.TxCounter THEN
 			_TxData.NoOfMessages := 0;	// Clear buffer count
 			bDone := TRUE;
-			nStep := 0;
+			_nStep := 0;
 		ELSE
 			bBusy := TRUE;
 		END_IF
@@ -183,6 +183,12 @@ END_CASE]]></ST>
       <LineId Id="30" Count="0" />
       <LineId Id="32" Count="0" />
     </LineIds>
+    <LineIds Name="ODriveCanSimpleTransporter.GetRxCounter">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveCanSimpleTransporter.IsTxDone">
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="ODriveCanSimpleTransporter.ReceiveData">
       <LineId Id="5" Count="0" />
       <LineId Id="14" Count="0" />
@@ -197,31 +203,11 @@ END_CASE]]></ST>
       <LineId Id="89" Count="1" />
       <LineId Id="92" Count="0" />
       <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="ODriveCanSimpleTransporter.GetRxCounter">
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="ODriveCanSimpleTransporter.IsTxDone">
-      <LineId Id="5" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="93" Count="4" />
     </LineIds>
     <LineIds Name="ODriveCanSimpleTransporter.SendCmd">
-      <LineId Id="5" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="20" Count="2" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="15" Count="1" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="55" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="60" Count="0" />
-      <LineId Id="35" Count="1" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="68" Count="0" />
+      <LineId Id="93" Count="20" />
       <LineId Id="11" Count="0" />
     </LineIds>
   </POU>
