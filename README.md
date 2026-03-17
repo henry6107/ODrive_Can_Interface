@@ -2,11 +2,14 @@
 
 這個專案是一個 TwinCAT 3 PLC 範例，將 ODrive 的 CAN Simple 指令封裝成可直接在 PLC 內呼叫的功能塊。主要使用入口是 `ODriveAxisController`，使用者只需要在週期任務中執行此功能塊，並呼叫對應方法，就可以完成 ODrive 軸狀態切換、控制模式設定、位置/速度命令下發，以及心跳、編碼器與錯誤資訊讀取。
 
+目前版本另外支援 ODrive cyclic heartbeat 的被動接收與自動快取。當 ODrive 端已啟用 cyclic heartbeat 時，PLC 可以不主動發送 `GetHeartBeat` 請求，而是直接透過 `bEnableAutoHeartBeat` 監看最新 heartbeat 狀態。
+
 目前專案內的通訊路徑如下：
 
 - `ODriveAxisController`：對外提供控制與讀取方法。
 - `ODriveCanSimpleTransporter`：負責把方法呼叫轉成 CAN Queue 收發。
 - EL6751 CAN Queue 映射：透過 `%Q*` / `%I*` 與 PLC 結構體交換資料。
+- 自動 heartbeat 快取：被動監看 cyclic heartbeat，更新 `stAutoHeartBeat` 與有效性旗標。
 
 ## 適用環境
 
@@ -22,6 +25,7 @@
 - CAN Queue 長度為 10 筆 Tx 與 10 筆 Rx
 - PLC 結構 `ST_CanQueue` 對應 EL6751 的 Queue 結構
 - `ODriveCanSimpleTransporter` 使用 `%Q*` 對應 Tx Queue、`%I*` 對應 Rx Queue
+- 自動 heartbeat timeout 使用 `GVL_ODrive.nAutoHeartBeat_TimeOut`，目前為 `T#500MS`
 - 全域 timeout 使用 `GVL_ODrive.nReceiveData_TimeOut`，目前為 `T#1S`
 - 專案中已配置 PLC Task 與 EL6751 I/O
 
@@ -47,13 +51,17 @@
 ```iecst
 VAR
     _fbODriveAxis : ODriveAxisController;
+    bEnableAutoHeartBeat : BOOL := TRUE;
 END_VAR
 ```
 
-此功能塊必須在每個 scan 週期都被執行，並傳入目標 ODrive 的 `NodeId`：
+此功能塊必須在每個 scan 週期都被執行，並傳入目標 ODrive 的 `NodeId`。若要被動接收 cyclic heartbeat，請同時開啟 `bEnableAutoHeartBeat`：
 
 ```iecst
-_fbODriveAxis(NodeId := 7);
+_fbODriveAxis(
+    NodeId := 7,
+    bEnableAutoHeartBeat := bEnableAutoHeartBeat
+);
 ```
 
 如果沒有在循環內持續執行這一行，內部的 `ODriveCanSimpleTransporter` 不會持續推進狀態機，命令可能無法送出或完成。
@@ -77,7 +85,18 @@ _fbODriveAxis(NodeId := 7);
 
 如果 `bExecute` 一直維持 `TRUE`，方法會停留在完成狀態，無法重新用新的上升沿再觸發一次。
 
-### 3. 基本建議操作順序
+### 3. 自動 HeartBeat 更新
+
+若 ODrive 已設定每 100 ms 送出 cyclic heartbeat，可直接使用 `ODriveAxisController` 的自動快取輸出：
+
+- `stAutoHeartBeat`：最後一次收到的 heartbeat 資料
+- `bAutoHeartBeatValid`：目前快取資料有效
+- `bAutoHeartBeatUpdated`：本 scan 剛收到新的 heartbeat
+- `bAutoHeartBeatTimedOut`：超過 `GVL_ODrive.nAutoHeartBeat_TimeOut` 沒收到新 heartbeat
+
+這個功能是被動監聽，不會主動發送 CAN 請求。若 `bEnableAutoHeartBeat = FALSE`，這些狀態旗標會清為 `FALSE`，但保留最後一次收到的 heartbeat 內容。
+
+### 4. 基本建議操作順序
 
 第一次接上 ODrive 時，建議依照下列順序操作：
 
@@ -97,6 +116,7 @@ _fbODriveAxis(NodeId := 7);
 ```iecst
 VAR
     _fbODriveAxis : ODriveAxisController;
+    bEnableAutoHeartBeat : BOOL := TRUE;
 
     bClearErrorsExecute : BOOL;
     byClearErrorsIdentify : BYTE;
@@ -129,8 +149,12 @@ VAR
     sSetInputPosErrorMsg : STRING;
     bSetInputPosDone : BOOL;
 
+    stAutoHeartBeat : ST_OdriveHeartbeat;
+    bAutoHeartBeatValid : BOOL;
+    bAutoHeartBeatUpdated : BOOL;
+    bAutoHeartBeatTimedOut : BOOL;
+
     bReadStatusExecute : BOOL;
-    stOdriveHeartBeat : ST_OdriveHeartbeat;
     stOdriveEncoderEstimates : ST_OdriveEncoderEstimates;
     stOdriveError : ST_OdriveError;
 END_VAR
@@ -178,11 +202,6 @@ _fbODriveAxis.SetInputPos(
     bDone => bSetInputPosDone
 );
 
-_fbODriveAxis.GetHeartBeat(
-    bExecute := bReadStatusExecute,
-    stOdriveHeartBeat => stOdriveHeartBeat
-);
-
 _fbODriveAxis.GetEncoderEstimates(
     bExecute := bReadStatusExecute,
     stOdriveEncoderEstimates => stOdriveEncoderEstimates
@@ -193,10 +212,18 @@ _fbODriveAxis.GetError(
     stOdriveError => stOdriveError
 );
 
-_fbODriveAxis(NodeId := 7);
+_fbODriveAxis(
+    NodeId := 7,
+    bEnableAutoHeartBeat := bEnableAutoHeartBeat
+);
+
+stAutoHeartBeat := _fbODriveAxis.stAutoHeartBeat;
+bAutoHeartBeatValid := _fbODriveAxis.bAutoHeartBeatValid;
+bAutoHeartBeatUpdated := _fbODriveAxis.bAutoHeartBeatUpdated;
+bAutoHeartBeatTimedOut := _fbODriveAxis.bAutoHeartBeatTimedOut;
 ```
 
-若要週期性更新狀態資料，請讓 `bReadStatusExecute` 以脈衝方式觸發，而不是長時間維持 `TRUE`。
+若要週期性更新心跳狀態，建議使用 `bEnableAutoHeartBeat` 的被動接收。若要主動讀取 `GetEncoderEstimates` 或 `GetError`，仍然請讓 `bReadStatusExecute` 以脈衝方式觸發，而不是長時間維持 `TRUE`。
 
 ### 簡單的命令觸發觀念
 
@@ -215,6 +242,17 @@ END_IF
 實務上你也可以用自己的步序控制，重點是要保留上升沿觸發與完成後復位的邏輯。
 
 ## 常用方法說明
+
+### 功能塊輸入 / 輸出
+
+| 名稱 | 類型 | 用途 |
+| --- | --- | --- |
+| `NodeId` | FB Input | 指定目標 ODrive CAN Node ID |
+| `bEnableAutoHeartBeat` | FB Input | 啟用被動接收 cyclic heartbeat |
+| `stAutoHeartBeat` | FB Output | 最後一次收到的 heartbeat 資料 |
+| `bAutoHeartBeatValid` | FB Output | heartbeat 快取目前有效 |
+| `bAutoHeartBeatUpdated` | FB Output | 本 scan 剛收到新 heartbeat |
+| `bAutoHeartBeatTimedOut` | FB Output | heartbeat 超時未更新 |
 
 ### 控制類方法
 
@@ -263,6 +301,8 @@ END_IF
 
 所有等待回應的方法都會受到 `GVL_ODrive.nReceiveData_TimeOut` 影響，目前預設值是 `T#1S`。若通訊正常但設備回覆較慢，可以視需要調整此常數。
 
+自動 heartbeat 快取另外使用 `GVL_ODrive.nAutoHeartBeat_TimeOut`，目前預設值是 `T#500MS`。若你的 ODrive heartbeat 週期不是 100 ms，可以依實際情況調整這個 timeout。
+
 ### Queue 上限
 
 `ODriveCanSimpleTransporter` 的傳送佇列上限是 10 筆。若同一時間塞入過多命令，`AddCmd` 會回報：
@@ -297,7 +337,17 @@ Tx message queue is fulled !
 
 通常是 `bExecute` 沒有在完成後拉回 `FALSE`。本專案的方法都依賴上升沿觸發，必須先回到 idle 才能再次啟動。
 
-### 3. 命令送不出去或 `bDone` 很慢才出現
+### 3. 自動 heartbeat 一直無效或 timeout
+
+請檢查：
+
+- ODrive 是否已啟用 cyclic heartbeat
+- `bEnableAutoHeartBeat` 是否為 `TRUE`
+- `NodeId` 是否正確
+- `GVL_ODrive.nAutoHeartBeat_TimeOut` 是否太短
+- EL6751 是否確實收到 heartbeat frame
+
+### 4. 命令送不出去或 `bDone` 很慢才出現
 
 請檢查：
 
@@ -305,7 +355,7 @@ Tx message queue is fulled !
 - `_fbODriveAxis(NodeId := ...)` 是否真的每個 scan 都有執行
 - PLC task 是否正常運作
 
-### 4. 可以讀狀態，但動作命令沒有效果
+### 5. 可以讀狀態，但動作命令沒有效果
 
 請確認：
 

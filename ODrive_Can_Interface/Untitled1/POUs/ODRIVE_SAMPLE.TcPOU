@@ -5,6 +5,7 @@
 VAR
 	_fbODriveAxis : ODriveAxisController;
 	bExecute : BOOL;
+	bEnableAutoHeartBeat : BOOL := TRUE;
 	
 	bClearErrorsExecute : BOOL;
 	byClearErrorsIdentify : BYTE;
@@ -58,7 +59,10 @@ VAR
 	sSetAbsolutePositionErrorMsg : STRING;
 	bSetAbsolutePositionDone : BOOL;
 	
-	stOdriveHeartBeat : ST_OdriveHeartbeat;
+	stAutoHeartBeat : ST_OdriveHeartbeat;
+	bAutoHeartBeatValid : BOOL;
+	bAutoHeartBeatUpdated : BOOL;
+	bAutoHeartBeatTimedOut : BOOL;
 	stOdriveEncoderEstimates : ST_OdriveEncoderEstimates;
 	stOdriveError : ST_OdriveError;
 END_VAR
@@ -123,10 +127,13 @@ _fbODriveAxis.SetAbsolutePosition(
 	sErrorMsg=> sSetAbsolutePositionErrorMsg,
 	bDone=> bSetAbsolutePositionDone
 );
-_fbODriveAxis.GetHeartBeat( bExecute:= bExecute, stOdriveHeartBeat=> stOdriveHeartBeat );
 _fbODriveAxis.GetEncoderEstimates( bExecute:= bExecute, stOdriveEncoderEstimates=> stOdriveEncoderEstimates );
 _fbODriveAxis.GetError( bExecute:= bExecute, stOdriveError=> stOdriveError );
-_fbODriveAxis(NodeId:= 7);]]></ST>
+_fbODriveAxis(NodeId:= 7, bEnableAutoHeartBeat:= bEnableAutoHeartBeat);
+stAutoHeartBeat := _fbODriveAxis.stAutoHeartBeat;
+bAutoHeartBeatValid := _fbODriveAxis.bAutoHeartBeatValid;
+bAutoHeartBeatUpdated := _fbODriveAxis.bAutoHeartBeatUpdated;
+bAutoHeartBeatTimedOut := _fbODriveAxis.bAutoHeartBeatTimedOut;]]></ST>
     </Implementation>
     <LineIds Name="ODRIVE_SAMPLE">
       <LineId Id="9" Count="0" />

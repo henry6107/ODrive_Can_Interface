@@ -69,14 +69,21 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	nIdx : UINT;
+	nIdx : DINT;
 	stCurCanMsg : ST_CanMessage;
 	nCurNodeId : UINT;
 	nCurCmd : UINT;
+	nMsgCount : UINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR nIdx := 0 TO (GVL_ODrive.nMaxMsgCount-1) DO
+        <ST><![CDATA[nMsgCount := _RxData.NoOfMessages;
+
+IF nMsgCount = 0 THEN
+	RETURN;
+END_IF
+
+FOR nIdx := TO_DINT(nMsgCount) - 1 TO 0 BY -1 DO
 	
 	// Parse data
 	stCurCanMsg := _RxData.Messages[nIdx];
@@ -93,6 +100,15 @@ END_VAR
 	RETURN;
 	
 END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetRxCounter" Id="{6c8af46b-18b4-41e4-8b9a-10f6f1190279}">
+      <Declaration><![CDATA[METHOD GetRxCounter : UINT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetRxCounter := _RxData.RxCounter;]]></ST>
       </Implementation>
     </Method>
     <Method Name="IsTxDone" Id="{48e53a82-6dc5-450b-b413-936a420ec00f}">
@@ -181,6 +197,9 @@ END_CASE]]></ST>
       <LineId Id="89" Count="1" />
       <LineId Id="92" Count="0" />
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveCanSimpleTransporter.GetRxCounter">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="ODriveCanSimpleTransporter.IsTxDone">
       <LineId Id="5" Count="0" />

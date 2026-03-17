@@ -10,6 +10,7 @@ VAR_GLOBAL CONSTANT
 	nNodeId_Mask : UINT := 2#1111_1100_0000_0000;
 	nNodeId_Shift : UINT := 10;
 	
+	nAutoHeartBeat_TimeOut : TIME := T#500MS;
 	nReceiveData_TimeOut : TIME := T#1S;
 END_VAR]]></Declaration>
   </GVL>

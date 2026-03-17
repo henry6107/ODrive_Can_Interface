@@ -4,10 +4,14 @@
     <Declaration><![CDATA[FUNCTION_BLOCK ODriveAxisController
 VAR_INPUT
 	NodeId : UINT;
+	bEnableAutoHeartBeat : BOOL;
 END_VAR
 
 VAR_OUTPUT
-	
+	stAutoHeartBeat : ST_OdriveHeartbeat;
+	bAutoHeartBeatValid : BOOL;
+	bAutoHeartBeatUpdated : BOOL;
+	bAutoHeartBeatTimedOut : BOOL;
 END_VAR
 
 VAR
@@ -15,7 +19,9 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_fbODriveCanSimpleTransporter();]]></ST>
+      <ST><![CDATA[_fbODriveCanSimpleTransporter();
+UpdateAutoHeartBeat();
+]]></ST>
     </Implementation>
     <Method Name="ClearErrors" Id="{9f6d8e5d-e30f-48f7-bcb6-5c8ff9cd4fa8}">
       <Declaration><![CDATA[METHOD ClearErrors
@@ -843,8 +849,68 @@ END_VAR
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="UpdateAutoHeartBeat" Id="{6c7f1735-84f4-4e40-8c58-60217bc84b28}">
+      <Declaration><![CDATA[METHOD PRIVATE UpdateAutoHeartBeat
+VAR_INPUT
+END_VAR
+
+VAR_OUTPUT
+END_VAR
+
+VAR
+	stCanMsg : ST_CanMessage;
+	bDataExist : BOOL;
+	nIdx : UINT;
+	nRxCounter : UINT;
+END_VAR
+
+VAR_INST
+	_tmrAutoHeartBeatTimeOut : TON;
+	_uAutoHeartBeat : U_OdriveHeartbeatBytes;
+	_nLastAutoHeartBeatRxCounter : UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bAutoHeartBeatUpdated := FALSE;
+
+IF NOT bEnableAutoHeartBeat THEN
+	bAutoHeartBeatValid := FALSE;
+	bAutoHeartBeatTimedOut := FALSE;
+	_tmrAutoHeartBeatTimeOut(IN:= FALSE);
+	RETURN;
+END_IF
+
+nRxCounter := _fbODriveCanSimpleTransporter.GetRxCounter();
+IF nRxCounter <> _nLastAutoHeartBeatRxCounter THEN
+	_nLastAutoHeartBeatRxCounter := nRxCounter;
+	_fbODriveCanSimpleTransporter.ReceiveData(NodeId, E_OdriveCmd.Heartbeat, bExist=> bDataExist, stResultCanMsg=> stCanMsg);
+	
+	IF bDataExist THEN
+		FOR nIdx := 0 TO 6 DO
+			_uAutoHeartBeat.aBytes[nIdx] := stCanMsg.Data[nIdx];
+		END_FOR
+		
+		stAutoHeartBeat := _uAutoHeartBeat.stHeartbeat;
+		bAutoHeartBeatValid := TRUE;
+		bAutoHeartBeatUpdated := TRUE;
+		bAutoHeartBeatTimedOut := FALSE;
+		_tmrAutoHeartBeatTimeOut(IN:= FALSE);
+	END_IF
+END_IF
+
+_tmrAutoHeartBeatTimeOut(IN:= TRUE, PT:= GVL_ODrive.nAutoHeartBeat_TimeOut);
+IF _tmrAutoHeartBeatTimeOut.Q THEN
+	bAutoHeartBeatValid := FALSE;
+	bAutoHeartBeatTimedOut := TRUE;
+ELSE
+	bAutoHeartBeatTimedOut := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="ODriveAxisController">
       <LineId Id="9" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.ClearErrors">
       <LineId Id="3" Count="45" />
@@ -957,6 +1023,10 @@ END_CASE]]></ST>
     </LineIds>
     <LineIds Name="ODriveAxisController.SetInputVel">
       <LineId Id="3" Count="47" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="ODriveAxisController.UpdateAutoHeartBeat">
+      <LineId Id="3" Count="32" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>
