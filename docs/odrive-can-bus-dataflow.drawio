@@ -1,0 +1,219 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0" compressed="false" version="29.6.3">
+  <diagram id="can-flow" name="CAN Bus Data Flow">
+    <mxGraphModel dx="1725" dy="985" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t0" parent="1" style="text;html=0;strokeColor=none;fillColor=none;align=left;fontSize=22;fontStyle=1;" value="ODrive CAN Bus Send and Receive Data Flow" vertex="1">
+          <mxGeometry height="30" width="700" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="bg1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;verticalAlign=top;" value="L1 Entry Layer" vertex="1">
+          <mxGeometry height="110" width="1500" x="40" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="bg2" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;verticalAlign=top;" value="L2 ODRIVE_SAMPLE Call Layer" vertex="1">
+          <mxGeometry height="150" width="1500" x="40" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="bg3" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;verticalAlign=top;" value="L3 ODriveAxisController Method Layer" vertex="1">
+          <mxGeometry height="190" width="1500" x="40" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="bg4" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;verticalAlign=top;" value="L4 Transport and Queue Layer" vertex="1">
+          <mxGeometry height="190" width="1500" x="40" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="bg5" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;verticalAlign=top;" value="L5 Physical Communication Layer" vertex="1">
+          <mxGeometry height="150" width="1500" x="40" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="bg6" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" value="L6 Decode and Writeback Layer" vertex="1">
+          <mxGeometry height="230" width="1500" x="40" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="n1" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=15;" value="Entry file&#xa;ODRIVE_SAMPLE.TcPOU" vertex="1">
+          <mxGeometry height="45" width="330" x="310" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#82b366;fontSize=14;" value="Write command calls&#xa;ClearErrors / Estop / SetAxisState / SetControllerMode / SetInputPos / SetInputVel / SetAbsolutePosition" vertex="1">
+          <mxGeometry height="70" width="420" x="90" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#82b366;fontSize=14;" value="Read command calls&#xa;GetEncoderEstimates / GetError" vertex="1">
+          <mxGeometry height="70" width="300" x="610" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#82b366;fontSize=14;" value="Cyclic FB body call&#xa;_fbODriveAxis(NodeId := 7, bEnableAutoHeartBeat := TRUE)" vertex="1">
+          <mxGeometry height="70" width="470" x="980" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#d6b656;fontSize=14;" value="Write path&#xa;R_TRIG on bExecute rising edge&#xa;Build CobId = NodeId + E_OdriveCmd + RTR=0 + DLC&#xa;Pack parameters into stCanMsg.Data[0..7]" vertex="1">
+          <mxGeometry height="100" width="380" x="70" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#d6b656;fontSize=14;" value="Read path&#xa;R_TRIG on bExecute rising edge&#xa;Build CobId = NodeId + E_OdriveCmd + RTR=1&#xa;Call AddCmd() to send read request" vertex="1">
+          <mxGeometry height="100" width="360" x="510" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#d6b656;fontSize=14;" value="FB body cyclic logic&#xa;_fbODriveCanSimpleTransporter()&#xa;UpdateAutoHeartBeat()" vertex="1">
+          <mxGeometry height="80" width="240" x="930" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#d6b656;fontSize=14;" value="Auto heartbeat monitor&#xa;If GetRxCounter() changed&#xa;ReceiveData(NodeId, Heartbeat)&#xa;500 ms timeout" vertex="1">
+          <mxGeometry height="100" width="260" x="1210" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#b85450;fontSize=14;" value="AddCmd(stCanMsg)&#xa;1. Check _TxData.NoOfMessages &lt; 10&#xa;2. _TxData.NoOfMessages++&#xa;3. _TxData.Messages[n-1] = stCanMsg" vertex="1">
+          <mxGeometry height="100" width="320" x="90" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#b85450;fontSize=14;" value="SendCmd(bExecute := _TxData.NoOfMessages &lt;&gt; 0)&#xa;1. _TxData.TxCounter++&#xa;2. Wait until _TxData.TxCounter = _RxData.TxCounter&#xa;3. Clear _TxData.NoOfMessages when sent" vertex="1">
+          <mxGeometry height="100" width="380" x="470" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#b85450;fontSize=14;" value="Rx queue and ReceiveData()&#xa;_RxData AT %I* : ST_CanQueue&#xa;Scan Messages[] from newest to oldest&#xa;Parse CobId with nNodeId_Mask and nCmd_Mask" vertex="1">
+          <mxGeometry height="100" width="420" x="910" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#b85450;fontSize=14;dashed=1;" value="Timeout values&#xa;nReceiveData_TimeOut = 1 s&#xa;nAutoHeartBeat_TimeOut = 500 ms" vertex="1">
+          <mxGeometry height="80" width="250" x="1370" y="635" as="geometry" />
+        </mxCell>
+        <mxCell id="n13" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#9673a6;fontSize=14;" value="EL6751 queue mapping&#xa;%Q* = _TxData&#xa;%I* = _RxData" vertex="1">
+          <mxGeometry height="70" width="220" x="170" y="835" as="geometry" />
+        </mxCell>
+        <mxCell id="n14" parent="1" style="ellipse;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#9673a6;fontSize=15;" value="CAN Bus" vertex="1">
+          <mxGeometry height="70" width="140" x="700" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="n15" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#9673a6;fontSize=14;" value="ODrive axis and controller&#xa;Receive command and send back&#xa;Encoder / Error / Heartbeat frames" vertex="1">
+          <mxGeometry height="90" width="270" x="1090" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="n16" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#666666;fontSize=14;" value="GetEncoderEstimates decode&#xa;stCanMsg.Data[0..7] -&gt; U_OdriveEncoderEstimatesBytes&#xa;-&gt; ST_OdriveEncoderEstimates" vertex="1">
+          <mxGeometry height="90" width="360" x="90" y="1305" as="geometry" />
+        </mxCell>
+        <mxCell id="n17" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#666666;fontSize=14;" value="GetError decode&#xa;stCanMsg.Data[0..7] -&gt; U_OdriveErrorBytes&#xa;-&gt; ST_OdriveError" vertex="1">
+          <mxGeometry height="90" width="320" x="490" y="1270" as="geometry" />
+        </mxCell>
+        <mxCell id="n18" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#666666;fontSize=14;" value="UpdateAutoHeartBeat decode&#xa;stCanMsg.Data[0..6] -&gt; U_OdriveHeartbeatBytes&#xa;-&gt; ST_OdriveHeartbeat&#xa;Update Valid / Updated / TimedOut flags" vertex="1">
+          <mxGeometry height="110" width="390" x="1000" y="1285" as="geometry" />
+        </mxCell>
+        <mxCell id="n19" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#666666;fontSize=14;" value="Write back to ODRIVE_SAMPLE outputs&#xa;stOdriveEncoderEstimates&#xa;stOdriveError&#xa;stAutoHeartBeat / bAutoHeartBeatValid / bAutoHeartBeatUpdated / bAutoHeartBeatTimedOut" vertex="1">
+          <mxGeometry height="90" width="560" x="500" y="1510" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="475" y="183" />
+              <mxPoint x="650" y="183" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="n2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=4;strokeColor=#3333FF;" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="n3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="360" />
+              <mxPoint x="630" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="n4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="n7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="n5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=4;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#3333FF;" target="n9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="540" />
+              <mxPoint x="250" y="540" />
+            </Array>
+            <mxPoint x="260" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="n6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="n9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="540" />
+              <mxPoint x="330" y="540" />
+            </Array>
+            <mxPoint x="300" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=4;strokeColor=#3333FF;" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="n8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n11" value="match NodeId and Cmd on received frame">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="n6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="540" />
+              <mxPoint x="1080" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=4;strokeColor=#3333FF;" target="n13">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="740" />
+              <mxPoint x="280" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="n13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="935" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="n14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="n15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="n15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;dashed=1;endArrow=block;endFill=1;strokeWidth=2;" target="n13" value="return frame and cyclic heartbeat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="n13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="810" />
+              <mxPoint x="1120" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="n11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n16" value="encoder reply">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="760" />
+              <mxPoint x="270" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="n11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n17" value="error reply">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="750" />
+              <mxPoint x="650" y="750" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="n11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n18" value="heartbeat reply">
+          <mxGeometry relative="1" x="-0.2464" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1120" y="780" />
+              <mxPoint x="1195" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="n16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n19">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="1470" />
+              <mxPoint x="780" y="1470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="1" source="n17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="1" source="n18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;strokeWidth=2;" target="n19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
