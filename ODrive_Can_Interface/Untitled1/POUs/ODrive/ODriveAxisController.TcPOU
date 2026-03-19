@@ -208,6 +208,7 @@ VAR_INST
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uEncoderEstimates : U_OdriveEncoderEstimatesBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -215,25 +216,50 @@ END_VAR
 	0:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
+			bBusy := TRUE;			
+			_nStep := 10;
+		END_IF
+		
+	10:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+			
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
 			bBusy := TRUE;			
 			_nStep := 1;
+			
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_nStep := 4;
 		END_IF
 	
 	1: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.GetEncoderEstimates), 5) OR SHL(nRTR, 4);
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
+		
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
 			_nStep := 2;
+			
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_nStep := 4;
 		END_IF
 		
-	2: // Receive command
+	2: // Receive data
 		_fbODriveCanSimpleTransporter.ReceiveData(NodeId, E_OdriveCmd.GetEncoderEstimates, bExist=> bDataExist, stResultCanMsg=> stCanMsg);
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		
 		IF _tmrTimeOut.Q THEN	// Time out
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Receive data Time out !';
+			sErrorMsg := _sErrorMsg;
+			_tmrTimeOut(IN:= FALSE);
+			_nStep := 4;
 			
 		ELSIF NOT bDataExist THEN	// Not receive data yet
 			bBusy := TRUE;
@@ -254,8 +280,16 @@ END_VAR
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
+			_nStep := 0;
+		END_IF
+	
+	4:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+			
+		ELSE
+			_sErrorMsg := '';
 			_nStep := 0;
 		END_IF
 	
@@ -921,7 +955,39 @@ END_IF]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetEncoderEstimates">
-      <LineId Id="215" Count="47" />
+      <LineId Id="215" Count="3" />
+      <LineId Id="340" Count="0" />
+      <LineId Id="219" Count="2" />
+      <LineId Id="292" Count="2" />
+      <LineId Id="298" Count="1" />
+      <LineId Id="328" Count="0" />
+      <LineId Id="301" Count="1" />
+      <LineId Id="335" Count="0" />
+      <LineId Id="330" Count="4" />
+      <LineId Id="329" Count="0" />
+      <LineId Id="300" Count="0" />
+      <LineId Id="222" Count="4" />
+      <LineId Id="327" Count="0" />
+      <LineId Id="227" Count="1" />
+      <LineId Id="326" Count="0" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="325" Count="0" />
+      <LineId Id="322" Count="0" />
+      <LineId Id="229" Count="7" />
+      <LineId Id="338" Count="0" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="336" Count="0" />
+      <LineId Id="339" Count="0" />
+      <LineId Id="238" Count="19" />
+      <LineId Id="260" Count="1" />
+      <LineId Id="307" Count="1" />
+      <LineId Id="310" Count="1" />
+      <LineId Id="319" Count="0" />
+      <LineId Id="313" Count="1" />
+      <LineId Id="320" Count="0" />
+      <LineId Id="318" Count="0" />
+      <LineId Id="309" Count="0" />
+      <LineId Id="262" Count="0" />
       <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetError">

@@ -11,6 +11,7 @@ VAR_GLOBAL CONSTANT
 	nNodeId_Shift : UINT := 10;
 	
 	nAutoHeartBeat_TimeOut : TIME := T#500MS;
+	nTxReady_TimeOut : TIME := T#300MS;
 	nReceiveData_TimeOut : TIME := T#1S;
 END_VAR]]></Declaration>
   </GVL>
