@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_OdriveAxisControllerWriteStep" Id="{707b9905-4dcf-4640-9347-177f17b7fe4e}">
+    <Declaration><![CDATA[TYPE E_OdriveAxisControllerWriteStep :
+(
+    OdriveAxisCtrlWrite_Idle := 0,
+    OdriveAxisCtrlWrite_AddCmd := 1,
+    OdriveAxisCtrlWrite_WaitTxDone := 2,
+    OdriveAxisCtrlWrite_Finish := 3,
+    OdriveAxisCtrlWrite_Error := 4,
+    OdriveAxisCtrlWrite_WaitTxReady := 10
+) UINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -33,6 +33,12 @@
     <Compile Include="DUTs\DUTs\ODrive\E_OdriveCmd.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveAxisControllerReadStep.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\DUTs\ODrive\E_OdriveAxisControllerWriteStep.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\DUTs\ODrive\E_OdriveControlMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>

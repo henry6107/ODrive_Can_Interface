@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_OdriveAxisControllerReadStep" Id="{2bc0c1d3-6405-4326-b849-4e4a7fbfd94e}">
+    <Declaration><![CDATA[TYPE E_OdriveAxisControllerReadStep :
+(
+    OdriveAxisCtrlRead_Idle := 0,
+    OdriveAxisCtrlRead_AddCmd := 1,
+    OdriveAxisCtrlRead_WaitResponse := 2,
+    OdriveAxisCtrlRead_Finish := 3,
+    OdriveAxisCtrlRead_Error := 4,
+    OdriveAxisCtrlRead_WaitTxReady := 10
+) UINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

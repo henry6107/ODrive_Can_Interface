@@ -47,56 +47,91 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
+		
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.ClearErrors), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		stCanMsg.Data[0] := byIdentify;
 		FOR nIdx := 1 TO 7 DO
 			stCanMsg.Data[nIdx] := 0;
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
+		
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -125,55 +160,88 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.Estop), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		FOR nIdx := 0 TO 7 DO
 			stCanMsg.Data[nIdx] := 0;
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -204,7 +272,7 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerReadStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uEncoderEstimates : U_OdriveEncoderEstimatesBytes;
@@ -212,45 +280,45 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlRead_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
 			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;			
-			_nStep := 10;
+			_eStep := OdriveAxisCtrlRead_WaitTxReady;
 		END_IF
 		
-	10:	// Check Tx is ready
+	OdriveAxisCtrlRead_WaitTxReady:	// Check Tx is ready
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
 			
 		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			_tmrTimeOut(IN:= FALSE);
 			bBusy := TRUE;			
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlRead_AddCmd;
 			
 		ELSIF _tmrTimeOut.Q THEN	// Time out
 			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
 			_sErrorMsg := 'Tx ready Time out !';
 			sErrorMsg := _sErrorMsg;
-			_nStep := 4;
+			_eStep := OdriveAxisCtrlRead_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlRead_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.GetEncoderEstimates), 5) OR SHL(nRTR, 4);
 		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlRead_WaitResponse;
 			
 		ELSIF bError THEN
 			sErrorMsg := _sErrorMsg;
-			_nStep := 4;
+			_eStep := OdriveAxisCtrlRead_Error;
 		END_IF
 		
-	2: // Receive data
+	OdriveAxisCtrlRead_WaitResponse: // Receive data
 		_fbODriveCanSimpleTransporter.ReceiveData(NodeId, E_OdriveCmd.GetEncoderEstimates, bExist=> bDataExist, stResultCanMsg=> stCanMsg);
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		
@@ -259,7 +327,7 @@ END_VAR
 			_sErrorMsg := 'Receive data Time out !';
 			sErrorMsg := _sErrorMsg;
 			_tmrTimeOut(IN:= FALSE);
-			_nStep := 4;
+			_eStep := OdriveAxisCtrlRead_Error;
 			
 		ELSIF NOT bDataExist THEN	// Not receive data yet
 			bBusy := TRUE;
@@ -270,27 +338,27 @@ END_VAR
 				_uEncoderEstimates.aBytes[nIdx] := stCanMsg.Data[nIdx];
 			END_FOR
 			stOdriveEncoderEstimates := _uEncoderEstimates.stEncoderEstimates;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlRead_Finish;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlRead_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			stOdriveEncoderEstimates := _uEncoderEstimates.stEncoderEstimates;
 			
 		ELSE
 			bDone := FALSE;
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlRead_Idle;
 		END_IF
 	
-	4:	// Error
+	OdriveAxisCtrlRead_Error:	// Error
 		IF bExecute THEN
 			bError := TRUE;
 			sErrorMsg := _sErrorMsg;
 			
 		ELSE
 			_sErrorMsg := '';
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlRead_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -321,36 +389,61 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerReadStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uOdriveError : U_OdriveErrorBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlRead_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;			
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlRead_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlRead_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlRead_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlRead_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlRead_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.GetError), 5) OR SHL(nRTR, 4);
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlRead_WaitResponse;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlRead_Error;
 		END_IF
 		
-	2: // Receive command
+	OdriveAxisCtrlRead_WaitResponse: // Receive command
 		_fbODriveCanSimpleTransporter.ReceiveData(NodeId, E_OdriveCmd.GetError, bExist=> bDataExist, stResultCanMsg=> stCanMsg);
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		
 		IF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Receive data Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlRead_Error;
 			
 		ELSIF NOT bDataExist THEN	// Not receive data yet
 			bBusy := TRUE;
@@ -361,19 +454,27 @@ END_VAR
 				_uOdriveError.aBytes[nIdx] := stCanMsg.Data[nIdx];
 			END_FOR
 			stOdriveError := _uOdriveError.stOdriveError;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlRead_Finish;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlRead_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			stOdriveError := _uOdriveError.stOdriveError;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlRead_Idle;
+		END_IF
+
+	OdriveAxisCtrlRead_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlRead_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -404,36 +505,62 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerReadStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uOdriveHeartBeat : U_OdriveHeartbeatBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlRead_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
+		
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;			
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlRead_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlRead_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlRead_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlRead_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlRead_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.Heartbeat), 5) OR SHL(nRTR, 4);
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlRead_WaitResponse;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlRead_Error;
 		END_IF
 		
-	2: // Receive command
+	OdriveAxisCtrlRead_WaitResponse: // Receive command
 		_fbODriveCanSimpleTransporter.ReceiveData(NodeId, E_OdriveCmd.Heartbeat, bExist=> bDataExist, stResultCanMsg=> stCanMsg);
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		
 		IF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Receive data Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlRead_Error;
 			
 		ELSIF NOT bDataExist THEN	// Not receive data yet
 			bBusy := TRUE;
@@ -444,19 +571,27 @@ END_VAR
 				_uOdriveHeartBeat.aBytes[nIdx] := stCanMsg.Data[nIdx];
 			END_FOR
 			stOdriveHeartBeat := _uOdriveHeartBeat.stHeartbeat;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlRead_Finish;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlRead_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			stOdriveHeartBeat := _uOdriveHeartBeat.stHeartbeat;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlRead_Idle;
+		END_IF
+
+	OdriveAxisCtrlRead_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlRead_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -486,22 +621,41 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uSetAbsolutePosition : U_OdriveSetAbsolutePositionBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
+		
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.Set_AbsPos), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		_uSetAbsolutePosition.stSetAbsolutePosition.rPosition := rPosition;
 		FOR nIdx := 0 TO 3 DO
@@ -511,35 +665,50 @@ END_VAR
 			stCanMsg.Data[nIdx] := 0;
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -569,22 +738,40 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uSetAxisState : U_OdriveSetAxisStateBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetAxisState), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		_uSetAxisState.stSetAxisState.eRequestedState := eRequestedState;
 		_uSetAxisState.aBytes[1] := 0;
@@ -598,35 +785,50 @@ END_VAR
 			stCanMsg.Data[nIdx] := 0;
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -657,22 +859,40 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uSetControllerMode : U_OdriveSetControllerModeBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetControllerMode), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		_uSetControllerMode.stSetControllerMode.eControlMode := eControlMode;
 		_uSetControllerMode.stSetControllerMode.eInputMode := eInputMode;
@@ -681,35 +901,50 @@ END_VAR
 			stCanMsg.Data[nIdx] := _uSetControllerMode.aBytes[nIdx];
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -741,22 +976,40 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uSetInputPos : U_OdriveSetInputPosBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetInputPos), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		_uSetInputPos.stSetInputPos.rInputPos := rInputPos;
 		_uSetInputPos.stSetInputPos.nVelFF := nVelFF;
@@ -766,35 +1019,50 @@ END_VAR
 			stCanMsg.Data[nIdx] := _uSetInputPos.aBytes[nIdx];
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -825,22 +1093,40 @@ VAR
 END_VAR
 
 VAR_INST
-	_nStep : UINT;
+	_eStep : E_OdriveAxisControllerWriteStep;
 	_rTrig : R_TRIG;
 	_tmrTimeOut : TON;
 	_uSetInputVel : U_OdriveSetInputVelBytes;
+	_sErrorMsg : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _nStep OF
-	0:	// Idle
+        <ST><![CDATA[CASE _eStep OF
+	OdriveAxisCtrlWrite_Idle:	// Idle
 		_rTrig(CLK:= bExecute);
 		IF _rTrig.Q THEN
+			_rTrig(CLK:= FALSE);
 			bBusy := TRUE;
-			_nStep := 1;
+			_eStep := OdriveAxisCtrlWrite_WaitTxReady;
+		END_IF
+
+	OdriveAxisCtrlWrite_WaitTxReady:	// Check Tx is ready
+		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nTxReady_TimeOut);
+
+		IF _fbODriveCanSimpleTransporter.IsTxDone() THEN
+			_tmrTimeOut(IN:= FALSE);
+			bBusy := TRUE;
+			_eStep := OdriveAxisCtrlWrite_AddCmd;
+
+		ELSIF _tmrTimeOut.Q THEN	// Time out
+			_tmrTimeOut(IN:= FALSE);
+			bError := TRUE;
+			_sErrorMsg := 'Tx ready Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 	
-	1: // Add command
+	OdriveAxisCtrlWrite_AddCmd: // Add command
 		stCanMsg.CobId := SHL(SHL(NodeId, 5) OR TO_UINT(E_OdriveCmd.SetInputVel), 5) OR SHL(nRTR, 4) OR nNoOfData;
 		_uSetInputVel.stSetInputVel.rInputVel := rInputVel;
 		_uSetInputVel.stSetInputVel.rInputTorqueFF := rInputTorqueFF;
@@ -849,35 +1135,50 @@ END_VAR
 			stCanMsg.Data[nIdx] := _uSetInputVel.aBytes[nIdx];
 		END_FOR
 		
-		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> sErrorMsg);
+		_fbODriveCanSimpleTransporter.AddCmd(stCanMsg, bDone=> bAddCmdDone, bError=> bError, sErrorMsg=> _sErrorMsg);
 		IF bAddCmdDone THEN
 			bBusy := TRUE;
-			_nStep := 2;
+			_eStep := OdriveAxisCtrlWrite_WaitTxDone;
+
+		ELSIF bError THEN
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		END_IF
 		
-	2: // Wait command sent
+	OdriveAxisCtrlWrite_WaitTxDone: // Wait command sent
 		_tmrTimeOut(IN:= TRUE, PT:= GVL_ODrive.nReceiveData_TimeOut);
 		IF _tmrTimeOut.Q THEN
+			_tmrTimeOut(IN:= FALSE);
 			bError := TRUE;
-			sErrorMsg := 'Time out !';
+			_sErrorMsg := 'Tx done Time out !';
+			sErrorMsg := _sErrorMsg;
+			_eStep := OdriveAxisCtrlWrite_Error;
 		
 		ELSIF _fbODriveCanSimpleTransporter.IsTxDone() THEN
 			bDone := TRUE;
-			_nStep := 3;
+			_eStep := OdriveAxisCtrlWrite_Finish;
 		
 		ELSE
 			bBusy := TRUE;
 		END_IF
 	
-	3:	// Finish
+	OdriveAxisCtrlWrite_Finish:	// Finish
 		IF bExecute THEN
 			bDone := TRUE;
 			
 		ELSE
 			bDone := FALSE;
-			_rTrig(CLK:= FALSE);
-			_tmrTimeOut(IN:= FALSE);
-			_nStep := 0;
+			_eStep := OdriveAxisCtrlWrite_Idle;
+		END_IF
+
+	OdriveAxisCtrlWrite_Error:	// Error
+		IF bExecute THEN
+			bError := TRUE;
+			sErrorMsg := _sErrorMsg;
+
+		ELSE
+			_sErrorMsg := '';
+			_eStep := OdriveAxisCtrlWrite_Idle;
 		END_IF
 	
 END_CASE]]></ST>
@@ -947,12 +1248,27 @@ END_IF]]></ST>
       <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.ClearErrors">
-      <LineId Id="714" Count="45" />
+      <LineId Id="714" Count="2" />
+      <LineId Id="790" Count="0" />
+      <LineId Id="717" Count="0" />
+      <LineId Id="789" Count="0" />
+      <LineId Id="718" Count="38" />
+      <LineId Id="791" Count="0" />
+      <LineId Id="757" Count="2" />
       <LineId Id="2" Count="0" />
+      <LineId Id="50" Count="16" />
+      <LineId Id="69" Count="9" />
+      <LineId Id="81" Count="2" />
+      <LineId Id="760" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.Estop">
-      <LineId Id="3" Count="44" />
+      <LineId Id="3" Count="3" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="7" Count="40" />
       <LineId Id="2" Count="0" />
+      <LineId Id="49" Count="16" />
+      <LineId Id="68" Count="9" />
+      <LineId Id="80" Count="3" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetEncoderEstimates">
       <LineId Id="215" Count="3" />
@@ -991,32 +1307,78 @@ END_IF]]></ST>
       <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetError">
-      <LineId Id="215" Count="47" />
+      <LineId Id="215" Count="3" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="219" Count="43" />
       <LineId Id="12" Count="0" />
+      <LineId Id="52" Count="16" />
+      <LineId Id="71" Count="9" />
+      <LineId Id="83" Count="2" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.GetHeartBeat">
-      <LineId Id="215" Count="47" />
+      <LineId Id="215" Count="2" />
+      <LineId Id="294" Count="0" />
+      <LineId Id="218" Count="0" />
+      <LineId Id="293" Count="0" />
+      <LineId Id="219" Count="43" />
       <LineId Id="12" Count="0" />
+      <LineId Id="52" Count="16" />
+      <LineId Id="71" Count="9" />
+      <LineId Id="83" Count="2" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.SetAbsolutePosition">
-      <LineId Id="108" Count="48" />
+      <LineId Id="108" Count="2" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="187" Count="0" />
+      <LineId Id="112" Count="44" />
       <LineId Id="2" Count="0" />
+      <LineId Id="53" Count="16" />
+      <LineId Id="72" Count="9" />
+      <LineId Id="84" Count="2" />
+      <LineId Id="157" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.SetAxisState">
-      <LineId Id="215" Count="52" />
+      <LineId Id="215" Count="3" />
+      <LineId Id="298" Count="0" />
+      <LineId Id="219" Count="48" />
       <LineId Id="2" Count="0" />
+      <LineId Id="57" Count="16" />
+      <LineId Id="76" Count="9" />
+      <LineId Id="88" Count="2" />
+      <LineId Id="268" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.SetControllerMode">
-      <LineId Id="109" Count="47" />
+      <LineId Id="109" Count="3" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="113" Count="43" />
       <LineId Id="2" Count="0" />
+      <LineId Id="52" Count="16" />
+      <LineId Id="71" Count="9" />
+      <LineId Id="83" Count="2" />
+      <LineId Id="157" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.SetInputPos">
-      <LineId Id="112" Count="48" />
+      <LineId Id="112" Count="3" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="116" Count="44" />
       <LineId Id="2" Count="0" />
+      <LineId Id="53" Count="16" />
+      <LineId Id="72" Count="9" />
+      <LineId Id="84" Count="2" />
+      <LineId Id="161" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.SetInputVel">
-      <LineId Id="109" Count="47" />
+      <LineId Id="109" Count="3" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="113" Count="43" />
       <LineId Id="2" Count="0" />
+      <LineId Id="52" Count="16" />
+      <LineId Id="71" Count="9" />
+      <LineId Id="83" Count="2" />
+      <LineId Id="157" Count="0" />
     </LineIds>
     <LineIds Name="ODriveAxisController.UpdateAutoHeartBeat">
       <LineId Id="3" Count="32" />
